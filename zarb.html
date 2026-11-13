@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>ماشین جدول ضرب</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@500;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1b2140;
+  --panel:#262d52;
+  --sign:#1664c8;
+  --sun:#ffcf33;
+  --red:#ff4b3a;
+  --ok:#2fcf6b;
+  --display:'Lalezar','Vazirmatn',Tahoma,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{
+  background:#0e1330;
+  font-family:'Vazirmatn',Tahoma,system-ui,sans-serif;
+  color:#fff;
+  display:flex;justify-content:center;
+  overflow:hidden;
+  touch-action:manipulation;
+  user-select:none;-webkit-user-select:none;
+}
+#app{
+  width:100%;max-width:520px;
+  height:100vh;height:100dvh;max-height:920px;
+  align-self:center;
+  display:flex;flex-direction:column;
+  background:var(--navy);
+  position:relative;
+}
+
+/* داشبورد */
+.hud{display:flex;gap:8px;padding:8px 10px 6px;align-items:stretch}
+.chip{
+  flex:1;background:var(--panel);border-radius:12px;
+  padding:4px 8px 3px;display:flex;flex-direction:column;align-items:center;line-height:1.1;
+}
+.chip small{font-size:11px;color:#a4aee0}
+.chip b{font-family:var(--display);font-weight:400;font-size:26px;color:var(--sun)}
+.mute{
+  width:44px;border:0;border-radius:12px;background:var(--panel);color:#fff;font-size:20px;cursor:pointer;
+}
+
+/* تابلوی سوال */
+.sign{
+  margin:2px 10px 8px;
+  background:var(--sign);
+  border:4px solid #fff;border-radius:18px;
+  box-shadow:0 0 0 3px var(--sign);
+  padding:6px 12px 10px;
+}
+#qtext{
+  direction:ltr;
+  display:flex;justify-content:center;align-items:center;gap:.28em;
+  font-family:var(--display);
+  font-size:clamp(44px,12.5vw,66px);line-height:1.15;
+}
+#qtext .op{opacity:.85}
+.timerRow{display:flex;align-items:center;gap:10px}
+.track{flex:1;height:16px;background:rgba(255,255,255,.28);border-radius:9px;overflow:hidden}
+#bar{height:100%;width:100%;background:#7cfc9a;border-radius:9px;transform-origin:right center}
+#secs{
+  min-width:40px;height:34px;border-radius:17px;padding:0 8px;
+  background:#0d3f86;color:#fff;
+  font-family:var(--display);font-size:24px;line-height:36px;text-align:center;
+}
+.warn #secs{background:var(--red)}
+
+/* صحنه */
+#view{flex:1;position:relative;min-height:0;overflow:hidden}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+
+#toast{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  background:var(--sun);color:#3a2a00;
+  border-radius:22px;padding:4px 20px 6px;text-align:center;
+  box-shadow:0 4px 0 #b8860b;
+  opacity:0;pointer-events:none;white-space:nowrap;
+}
+#toast b{display:block;font-family:var(--display);font-weight:400;font-size:24px;line-height:1.2}
+#toast span{font-size:13px;font-weight:800}
+#toast.show{animation:toast 2s ease both}
+@keyframes toast{
+  0%{opacity:0;transform:translate(-50%,-14px) scale(.9)}
+  12%{opacity:1;transform:translate(-50%,0) scale(1.06)}
+  20%{transform:translate(-50%,0) scale(1)}
+  85%{opacity:1;transform:translate(-50%,0)}
+  100%{opacity:0;transform:translate(-50%,0)}
+}
+
+/* دکمه‌ها */
+.controls{display:flex;gap:10px;padding:10px;direction:ltr;background:var(--navy)}
+.btn{
+  flex:1;height:62px;border:0;border-radius:18px;
+  font-family:var(--display);font-size:30px;color:#fff;
+  background:#3a4380;box-shadow:0 5px 0 #20274f;cursor:pointer;
+}
+.btn:active,.btn.on{transform:translateY(3px);box-shadow:0 2px 0 #20274f}
+#turbo{flex:1.4;background:#ff7a1a;box-shadow:0 5px 0 #b34a00;font-size:22px}
+#turbo:active,#turbo.on{box-shadow:0 2px 0 #b34a00}
+
+/* صفحه شروع و پایان */
+.overlay{
+  position:absolute;inset:0;z-index:5;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;padding:22px;text-align:center;
+  background:rgba(14,19,48,.86);
+}
+.overlay.hidden{display:none}
+.overlay h1{font-family:var(--display);font-weight:400;font-size:clamp(36px,10vw,52px);margin:0;color:var(--sun);line-height:1.1}
+.rules{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:15px;font-weight:500;max-width:330px;text-align:right}
+.rules li{background:var(--panel);border-radius:12px;padding:8px 12px;line-height:1.7}
+.rules b{color:var(--sun)}
+.go{
+  font-family:var(--display);font-size:30px;
+  background:var(--sun);color:#3a2a00;border:0;border-radius:20px;
+  padding:8px 40px 10px;box-shadow:0 6px 0 #b8860b;cursor:pointer;margin-top:4px;
+}
+.go:active{transform:translateY(4px);box-shadow:0 2px 0 #b8860b}
+.go:disabled{opacity:.5;cursor:default}
+.bestline{font-size:15px;color:#a4aee0}
+.bestline b{font-family:var(--display);font-weight:400;font-size:24px;color:var(--sun)}
+#eq{
+  direction:ltr;display:flex;gap:.3em;justify-content:center;
+  font-family:var(--display);font-size:clamp(44px,13vw,70px);line-height:1.15;
+}
+#eq .res{color:#6df3a1}
+.sub{font-size:16px;font-weight:500}
+.newrec{font-family:var(--display);font-size:28px;color:var(--sun)}
+
+.overlay{overflow-y:auto;justify-content:safe center;gap:10px}
+.credit{font-size:14px;font-weight:500;color:#a4aee0}
+.credit b{color:#fff;font-weight:800}
+#nameInput{
+  font-family:inherit;font-size:22px;font-weight:800;text-align:center;
+  width:min(290px,100%);padding:9px 14px;border-radius:16px;
+  border:3px solid #3a4380;background:#12183a;color:#fff;outline:none;
+}
+#nameInput::placeholder{color:#6d78b0;font-weight:500}
+#nameInput:focus{border-color:var(--sun)}
+#nameInput.need{border-color:var(--red);animation:nudge .35s}
+@keyframes nudge{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+#cheer{
+  position:absolute;top:76px;left:50%;transform:translateX(-50%);
+  font-family:var(--display);font-size:26px;color:#fff;white-space:nowrap;
+  text-shadow:0 2px 0 #1b2140,0 0 8px #1b2140;
+  opacity:0;pointer-events:none;
+}
+#cheer.show{animation:cheer 1.3s ease both}
+@keyframes cheer{
+  0%{opacity:0;transform:translate(-50%,8px) scale(.8)}
+  15%{opacity:1;transform:translate(-50%,0) scale(1.08)}
+  25%{transform:translate(-50%,0) scale(1)}
+  80%{opacity:1;transform:translate(-50%,0)}
+  100%{opacity:0;transform:translate(-50%,-8px)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  #toast.show,#cheer.show{animation-duration:.01s;animation-fill-mode:both}
+}
+</style>
+</head>
+<body oncontextmenu="return false">
+<div id="app">
+
+  <div class="hud">
+    <div class="chip"><small>مرحله</small><b id="stage">۱</b></div>
+    <div class="chip"><small>امتیاز</small><b id="score">۰</b></div>
+    <div class="chip"><small>رکورد</small><b id="best">۰</b></div>
+    <button class="mute" id="mute" aria-label="قطع و وصل صدا">🔊</button>
+  </div>
+
+  <div class="sign" id="sign">
+    <div id="qtext"><span>۷</span><span class="op">×</span><span>۸</span><span class="op">=</span><span>؟</span></div>
+    <div class="timerRow">
+      <div class="track"><div id="bar"></div></div>
+      <div id="secs">۱۰</div>
+    </div>
+  </div>
+
+  <div id="view">
+    <canvas id="c"></canvas>
+    <div id="toast"><b></b><span></span></div>
+    <div id="cheer"></div>
+
+    <div class="overlay" id="startScreen">
+      <div class="credit">طراح: <b>محمدهادی رشیدی</b></div>
+      <h1>ماشین جدول ضرب</h1>
+      <input id="nameInput" type="text" maxlength="16" placeholder="اسمت را بنویس" autocomplete="off" aria-label="نام دانش‌آموز">
+      <ul class="rules">
+        <li>ماشین را به سمت <b>جواب درست</b> هدایت کن. با کلیدهای ← → یا با لمس جاده.</li>
+        <li>هر مرحله <b>وقت کمتر</b> می‌شود.</li>
+        <li>با <b>یک اشتباه</b> بازی از اول شروع می‌شود.</li>
+      </ul>
+      <div class="bestline">رکورد تو: <b id="bestStart">۰</b></div>
+      <button class="go" id="startBtn">شروع</button>
+    </div>
+
+    <div class="overlay hidden" id="overScreen">
+      <div class="sub" id="overMsg"></div>
+      <div class="sub">جواب درست این بود:</div>
+      <div id="eq"></div>
+      <div class="newrec" id="newrec" hidden>🏆 رکورد جدید!</div>
+      <div class="sub">امتیاز: <b id="finalScore">۰</b> &nbsp;|&nbsp; رکورد: <b id="finalBest">۰</b></div>
+      <button class="go" id="againBtn">دوباره از اول</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="left" aria-label="چپ">◀</button>
+    <button class="btn" id="turbo" aria-label="سریع‌تر">🚀 سریع‌تر</button>
+    <button class="btn" id="right" aria-label="راست">▶</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ============ تنظیمات بازی (اینجا را می‌شود تغییر داد) ============ */
+const CFG = {
+  startTime: 10,       // زمان هر سوال در مرحله اول (ثانیه)
+  decay: 0.9,          // در هر مرحله زمان در این عدد ضرب می‌شود
+  minTime: 2.5,        // کمترین زمان ممکن
+  perStage: 4,         // بعد از چند جواب درست، مرحله بعد
+  turbo: 3,            // سرعت دکمه «سریع‌تر»
+  firstMaxFactor: 5,   // بزرگ‌ترین عدد ضرب در مرحله اول
+  maxFactor: 10        // بزرگ‌ترین عدد ضرب در مرحله‌های سخت
+};
+
+/* ============ ابزارها ============ */
+const FA = '۰۱۲۳۴۵۶۷۸۹';
+const fa = n => String(n).replace(/\d/g, d => FA[d]).replace('.', '٫');
+const $ = id => document.getElementById(id);
+const rnd = n => Math.floor(Math.random() * n);
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const easeOutBack = t => { const c = 1.9; t = clamp(t, 0, 1); return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+
+/* ============ رکورد ============ */
+let best = 0, playerName = '', streak = 0;
+const bestKey = n => 'zarb-car-best:' + n;
+function loadBest(n) { try { return +localStorage.getItem(bestKey(n)) || 0; } catch (e) { return 0; } }
+function saveBest() { try { localStorage.setItem(bestKey(playerName), best); } catch (e) {} }
+try { playerName = localStorage.getItem('zarb-car-name') || ''; } catch (e) {}
+best = playerName ? loadBest(playerName) : 0;
+
+/* ============ صدا ============ */
+let AC = null, muted = false;
+function audio() {
+  if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+  if (AC && AC.state === 'suspended') AC.resume();
+  return AC;
+}
+function tone(f, d, type = 'sine', v = .12, delay = 0, slideTo) {
+  if (muted) return;
+  const ac = audio(); if (!ac) return;
+  const t = ac.currentTime + delay;
+  const o = ac.createOscillator(), g = ac.createGain();
+  o.type = type; o.frequency.setValueAtTime(f, t);
+  if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + d);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(v, t + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+  o.connect(g); g.connect(ac.destination);
+  o.start(t); o.stop(t + d + 0.03);
+}
+const sfx = {
+  ok()   { tone(660, .12, 'triangle', .16); tone(880, .2, 'triangle', .16, .1); },
+  bad()  { tone(240, .6, 'sawtooth', .13, 0, 70); },
+  up()   { [523, 659, 784, 1047].forEach((f, i) => tone(f, .15, 'square', .06, .25 + i * .08)); },
+  move() { tone(320, .05, 'sine', .05); }
+};
+
+/* ============ بوم و هندسه جاده ============ */
+const cv = $('c'), ctx = cv.getContext('2d');
+let W = 300, H = 400, DPR = 1;
+function resize() {
+  const r = cv.getBoundingClientRect();
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = Math.max(100, r.width); H = Math.max(100, r.height);
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+}
+new ResizeObserver(resize).observe(cv);
+window.addEventListener('resize', resize);
+
+const A_TOP = 0.06, A_BOT = 0.54;   // نصف عرض جاده نسبت به W در افق و پایین
+const HOR = 0.30;                   // محل افق نسبت به H
+const Q_CAR = 0.82;                 // جای ماشین روی جاده
+const Q0 = 0.26;                    // جایی که کادرها ظاهر می‌شوند
+const LANE_COL = ['#ff8a1f', '#1fb8a6', '#8b5cf6'];
+const qToY = q => H * HOR + (H - H * HOR) * q;
+const halfW = q => W * (A_TOP + (A_BOT - A_TOP) * q);
+const laneX = (lane, q) => W / 2 + (lane - 1) * (2 / 3) * halfW(q);
+
+function rpath(x, y, w, h, r) {
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h);
+}
+function rfill(x, y, w, h, r) { rpath(x, y, w, h, r); ctx.fill(); }
+
+/* ============ وضعیت بازی ============ */
+let state = 'menu';            // menu | playing | over
+let stage = 1, solved = 0, score = 0;
+let lastQ = null, gate = null;
+let carLane = 1, carOff = 0, targetOff = 0;
+let turbo = false;
+let speed = 1, travel = 0, time = 0, flash = 0, shake = 0;
+const particles = [];
+const trees = [];
+for (let i = 0; i < 16; i++) {
+  trees.push({ z: 1 + i * 0.52, side: i % 2 ? 1 : -1, off: Math.random(), size: 0.8 + Math.random() * 0.5, kind: rnd(4) });
+}
+
+const stageTime = st => Math.max(CFG.minTime, +(CFG.startTime * Math.pow(CFG.decay, st - 1)).toFixed(1));
+const maxFactor = st => Math.min(CFG.maxFactor, CFG.firstMaxFactor + st - 1);
+
+function makeQuestion() {
+  const mf = maxFactor(stage);
+  let a, b, tries = 0;
+  do {
+    a = 2 + rnd(mf - 1); b = 2 + rnd(mf - 1); tries++;
+  } while (lastQ && tries < 20 && ((a === lastQ.a && b === lastQ.b) || (a === lastQ.b && b === lastQ.a)));
+  const ans = a * b;
+  const near = shuffle([(a + 1) * b, (a - 1) * b, a * (b + 1), a * (b - 1)]);
+  const far = shuffle([ans + 10, ans - 10, ans + 2, ans - 2, ans + 1, ans - 1, a + b]);
+  const wrong = [];
+  for (const v of near.concat(far)) {
+    if (v > 0 && v !== ans && !wrong.includes(v)) wrong.push(v);
+    if (wrong.length === 2) break;
+  }
+  const opts = shuffle([ans, wrong[0], wrong[1]]);
+  return { a, b, ans, opts, correct: opts.indexOf(ans) };
+}
+
+function showQuestion(q) {
+  $('qtext').innerHTML =
+    `<span>${fa(q.a)}</span><span class="op">×</span><span>${fa(q.b)}</span><span class="op">=</span><span>؟</span>`;
+}
+
+function spawnQuestion() {
+  const q = makeQuestion(); lastQ = q;
+  gate = { q, opts: q.opts, correct: q.correct, T: stageTime(stage),
+           elapsed: 0, real: 0, u: 0, spawn: 0, pt: 0, hitT: 0, hide: -1, status: 'approach' };
+  showQuestion(q);
+  lastSecs = -1; barTier = '';
+}
+
+function hud() {
+  $('stage').textContent = fa(stage);
+  $('score').textContent = fa(score);
+  $('best').textContent = fa(Math.max(best, score));
+}
+
+function toast(title, sub) {
+  const t = $('toast');
+  t.querySelector('b').textContent = title;
+  t.querySelector('span').textContent = sub;
+  t.classList.remove('show'); void t.offsetWidth; t.classList.add('show');
+}
+
+let cheerPick = 0;
+function cheer(text) {
+  const c = $('cheer');
+  c.textContent = text;
+  c.classList.remove('show'); void c.offsetWidth; c.classList.add('show');
+}
+
+function startGame() {
+  const inp = $('nameInput');
+  const nm = inp.value.trim().slice(0, 16);
+  if (!nm) {
+    inp.classList.remove('need'); void inp.offsetWidth; inp.classList.add('need'); inp.focus();
+    return;
+  }
+  if (nm !== playerName) { playerName = nm; best = loadBest(nm); }
+  try { localStorage.setItem('zarb-car-name', playerName); } catch (e) {}
+  audio();
+  streak = 0;
+  stage = 1; solved = 0; score = 0; lastQ = null;
+  carLane = 1; targetOff = 0; carOff = 0; turbo = false;
+  particles.length = 0; flash = 0; shake = 0;
+  $('startScreen').classList.add('hidden');
+  $('overScreen').classList.add('hidden');
+  state = 'playing';
+  hud();
+  spawnQuestion();
+  toast('مرحله ۱', `${playerName}، زمان هر سوال: ${fa(stageTime(1))} ثانیه`);
+}
+
+function gameOver() {
+  state = 'over';
+  const prevBest = best;
+  const isNew = score > best && score > 0;
+  if (score > best) { best = score; saveBest(); }
+  let msg;
+  if (isNew) msg = `آفرین ${playerName}! رکوردت را شکستی.`;
+  else if (solved === 0) msg = `اشکال نداره ${playerName}! دوباره امتحان کن.`;
+  else msg = `${playerName}، ${fa(solved)} جواب درست دادی. تا رکوردت فقط ${fa(prevBest - score + 1)} امتیاز مانده!`;
+  $('overMsg').textContent = msg;
+  const q = gate.q;
+  $('eq').innerHTML =
+    `<span>${fa(q.a)}</span><span>×</span><span>${fa(q.b)}</span><span>=</span><span class="res">${fa(q.ans)}</span>`;
+  $('newrec').hidden = !isNew;
+  $('finalScore').textContent = fa(score);
+  $('finalBest').textContent = fa(best);
+  hud();
+  const btn = $('againBtn');
+  btn.disabled = true;
+  $('overScreen').classList.remove('hidden');
+  setTimeout(() => { btn.disabled = false; btn.focus(); }, 700);
+}
+
+/* ============ داوری جواب ============ */
+function judge() {
+  const g = gate;
+  const ok = carLane === g.correct;
+  const q = Q_CAR, y = qToY(q), x = laneX(carLane, q), s = halfW(q) * (2 / 3) * 0.9;
+  if (ok) {
+    const bonus = Math.round(10 * (1 - clamp(g.real / g.T, 0, 1)));
+    const pts = stage * 10 + bonus;
+    score += pts; solved++;
+    sfx.ok();
+    burst(x, y - s * 0.6, LANE_COL[carLane], 26);
+    burst(x, y - s * 0.6, '#ffcf33', 14);
+    popText(x, y - s * 1.1, '+' + fa(pts), '#fff');
+    g.status = 'pass'; g.pt = 0; g.hide = carLane;
+    flash = -0.5;
+    streak++;
+    if (solved % CFG.perStage === 0) {
+      stage++;
+      sfx.up();
+      toast(`مرحله ${fa(stage)}`, `${playerName}، زمان هر سوال: ${fa(stageTime(stage))} ثانیه`);
+    } else if (streak % 5 === 0) {
+      cheer(`${playerName}، ${fa(streak)} جواب درست پشت سر هم!`);
+    } else if (bonus >= 5) {
+      cheer(`${playerName}، چه سریع!`);
+    } else {
+      const praise = ['آفرین', 'عالی بود', 'درسته', 'ماشالله', 'خیلی خوب'];
+      cheer(`${praise[cheerPick++ % praise.length]} ${playerName}!`);
+    }
+    hud();
+  } else {
+    sfx.bad();
+    g.status = 'hit'; g.hitT = 0;
+    flash = 1; shake = 1;
+    burst(x, y - s * 0.4, '#ff4b3a', 18);
+    smoke(laneX(carLane, Q_CAR), y - s * 0.3);
+  }
+}
+
+/* ============ ذره‌ها ============ */
+function burst(x, y, color, n) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, sp = 70 + Math.random() * 230;
+    particles.push({ kind: 'conf', x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 130, g: 520,
+      life: .7 + Math.random() * .5, age: 0, size: 4 + Math.random() * 6, color, rot: Math.random() * 6, vr: (Math.random() - .5) * 14 });
+  }
+}
+function smoke(x, y) {
+  for (let i = 0; i < 14; i++) {
+    particles.push({ kind: 'smoke', x: x + (Math.random() - .5) * 30, y, vx: (Math.random() - .5) * 40, vy: -40 - Math.random() * 60, g: 0,
+      life: 1 + Math.random() * .6, age: 0, size: 10 + Math.random() * 14, color: '#d9dcea' });
+  }
+}
+function popText(x, y, text, color) {
+  particles.push({ kind: 'text', x, y, vx: 0, vy: -70, g: 0, life: 1.1, age: 0, size: 34, color, text });
+}
+
+/* ============ به‌روزرسانی ============ */
+let lastSecs = -1, barTier = '';
+function step(dt) {
+  time += dt;
+  carOff += (targetOff - carOff) * (1 - Math.exp(-dt * 16));
+
+  let target = 1.0;
+  if (state === 'playing' && gate) {
+    if (gate.status === 'approach') target = (1.2 + 6 / gate.T) * (turbo ? 2.2 : 1);
+    else if (gate.status === 'pass') target = 2.6;
+    else target = 0;
+  } else if (state === 'over') target = 0;
+  speed += (target - speed) * (1 - Math.exp(-dt * 4));
+  travel += speed * dt;
+  for (const t of trees) { t.z -= speed * dt; if (t.z < 0.9) t.z += 8.4; }
+
+  if (state === 'playing' && gate) {
+    const g = gate;
+    g.spawn = Math.min(1, g.spawn + dt / 0.3);
+    if (g.status === 'approach') {
+      g.elapsed += dt * (turbo ? CFG.turbo : 1);
+      g.real += dt;
+      g.u = Math.min(1, g.elapsed / g.T);
+      if (g.u >= 1) judge();
+    } else if (g.status === 'pass') {
+      g.pt += dt / 0.55;
+      if (g.pt >= 1) spawnQuestion();
+    } else if (g.status === 'hit') {
+      g.hitT += dt;
+      if (g.hitT > 1.2) gameOver();
+    }
+    timerUI();
+  }
+
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { particles.splice(i, 1); continue; }
+    p.vy += p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt;
+    if (p.kind === 'conf') p.rot += p.vr * dt;
+  }
+  if (flash > 0) flash = Math.max(0, flash - dt * 2.5);
+  else if (flash < 0) flash = Math.min(0, flash + dt * 3);
+  shake = Math.max(0, shake - dt * 1.6);
+}
+
+function timerUI() {
+  const g = gate;
+  const rem = g.status === 'approach' ? g.T * (1 - g.u) : 0;
+  const f = rem / g.T;
+  $('bar').style.transform = `scaleX(${f})`;
+  const tier = f > .5 ? 'a' : f > .25 ? 'b' : 'c';
+  if (tier !== barTier) {
+    barTier = tier;
+    $('bar').style.background = tier === 'a' ? '#7cfc9a' : tier === 'b' ? '#ffd23f' : '#ff5a4a';
+  }
+  const s = g.status === 'approach' ? Math.ceil(rem - 1e-6) : 0;
+  if (s !== lastSecs) {
+    lastSecs = s; $('secs').textContent = fa(s);
+    $('sign').classList.toggle('warn', s <= 3 && g.status === 'approach');
+  }
+}
+
+/* ============ نقاشی ============ */
+function drawScene() {
+  const y0 = H * HOR;
+  // آسمان
+  const sky = ctx.createLinearGradient(0, 0, 0, y0);
+  sky.addColorStop(0, '#4fb3ff'); sky.addColorStop(1, '#dff4ff');
+  ctx.fillStyle = sky; ctx.fillRect(0, 0, W, y0 + 1);
+  // خورشید
+  ctx.fillStyle = '#ffe066'; ctx.beginPath(); ctx.arc(W * 0.82, H * 0.1, W * 0.065, 0, 7); ctx.fill();
+  // ابر
+  ctx.fillStyle = 'rgba(255,255,255,.9)';
+  for (let i = 0; i < 3; i++) {
+    const cx = ((time * (6 + i * 3) + i * W * 0.45) % (W + 160)) - 80;
+    const cy = H * (0.06 + i * 0.05);
+    ctx.beginPath();
+    ctx.arc(cx, cy, 14, 0, 7); ctx.arc(cx + 16, cy - 7, 17, 0, 7); ctx.arc(cx + 34, cy, 13, 0, 7);
+    ctx.fill();
+  }
+  // تپه‌ها
+  const hill = (col, f, ph, amp) => {
+    ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(0, y0);
+    for (let x = 0; x <= W + 8; x += 8) ctx.lineTo(x, y0 - H * 0.015 - (Math.sin(x * f + ph) * .5 + .5) * H * amp);
+    ctx.lineTo(W, y0); ctx.closePath(); ctx.fill();
+  };
+  hill('#a6e0b4', 0.011, 1.2, 0.06);
+  hill('#86cf9a', 0.017, 4.0, 0.035);
+
+  // زمین و جاده (ردیف به ردیف برای حس عمق)
+  const step = 2;
+  for (let y = Math.floor(y0); y < H; y += step) {
+    const q = (y - y0) / (H - y0);
+    const hw = halfW(q), s = hw / (W * A_BOT), z = 1 / s;
+    const band = Math.floor((z + travel) * 1.25) & 1;
+    const cx = W / 2;
+    ctx.fillStyle = band ? '#69c54b' : '#5cb840';
+    ctx.fillRect(0, y, W, step);
+    const cw = hw * 0.07;
+    ctx.fillStyle = band ? '#ffffff' : '#ff4b3a';
+    ctx.fillRect(cx - hw - cw, y, cw, step);
+    ctx.fillRect(cx + hw, y, cw, step);
+    ctx.fillStyle = band ? '#3f465a' : '#394053';
+    ctx.fillRect(cx - hw, y, hw * 2, step);
+    const lw = Math.max(1, hw * 0.018);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(cx - hw * 0.95, y, lw, step);
+    ctx.fillRect(cx + hw * 0.95 - lw, y, lw, step);
+    if (band) {
+      ctx.fillStyle = 'rgba(255,255,255,.85)';
+      ctx.fillRect(cx - hw / 3 - lw / 2, y, lw, step);
+      ctx.fillRect(cx + hw / 3 - lw / 2, y, lw, step);
+    }
+  }
+}
+
+function drawTrees() {
+  const k = A_TOP / A_BOT;
+  const list = trees.slice().sort((a, b) => b.z - a.z);
+  for (const t of list) {
+    const s = 1 / t.z, q = (s - k) / (1 - k);
+    if (q < 0 || q > 1.4) continue;
+    const y = qToY(q), hw = halfW(q);
+    const x = W / 2 + t.side * (hw * 1.24 + hw * 0.14 * t.off);
+    const th = hw * 0.55 * t.size;
+    if (x < -th || x > W + th) continue;
+    ctx.fillStyle = 'rgba(0,0,0,.15)';
+    ctx.beginPath(); ctx.ellipse(x, y, th * 0.3, th * 0.07, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = '#8a5a34'; ctx.fillRect(x - th * 0.05, y - th * 0.38, th * 0.1, th * 0.38);
+    const dark = t.kind === 3 ? '#e8892b' : t.kind === 2 ? '#2a9a58' : '#2f9e4f';
+    const light = t.kind === 3 ? '#f7b24f' : t.kind === 2 ? '#47c27a' : '#4cc060';
+    ctx.fillStyle = dark; ctx.beginPath(); ctx.arc(x, y - th * 0.62, th * 0.31, 0, 7); ctx.fill();
+    ctx.fillStyle = light; ctx.beginPath(); ctx.arc(x - th * 0.07, y - th * 0.68, th * 0.2, 0, 7); ctx.fill();
+  }
+}
+
+function gateQ(g) {
+  if (g.status === 'approach') return Q0 + (Q_CAR - Q0) * Math.pow(g.u, 1.3);
+  if (g.status === 'pass') return Q_CAR + (1.3 - Q_CAR) * g.pt * g.pt;
+  return Q_CAR;
+}
+
+function drawBox(x, y, s, text, col, mode, sc, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha * (mode === 'dim' ? 0.45 : 1);
+  ctx.translate(x, y); ctx.scale(sc, sc);
+  ctx.fillStyle = 'rgba(0,0,0,.25)';
+  ctx.beginPath(); ctx.ellipse(0, 0, s * 0.5, s * 0.1, 0, 0, 7); ctx.fill();
+  ctx.fillStyle = '#dfe5f2';
+  ctx.fillRect(-s * 0.3, -s * 0.3, s * 0.07, s * 0.3);
+  ctx.fillRect(s * 0.23, -s * 0.3, s * 0.07, s * 0.3);
+  const pw = s, ph = s * 0.82, px = -pw / 2, py = -s * 0.22 - ph;
+  const fill = mode === 'good' ? '#c8f7d3' : mode === 'bad' ? '#ffd6d1' : '#ffffff';
+  const bcol = mode === 'good' ? '#1fbf5b' : mode === 'bad' ? '#ff4b3a' : col;
+  ctx.lineWidth = Math.max(2, s * 0.08);
+  rpath(px, py, pw, ph, s * 0.16);
+  ctx.fillStyle = fill; ctx.fill();
+  if (mode === 'good') { ctx.shadowColor = '#2fe07a'; ctx.shadowBlur = s * 0.45; }
+  ctx.strokeStyle = bcol; ctx.stroke();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#1b2140';
+  const fs = text.length >= 3 ? s * 0.4 : s * 0.52;
+  ctx.font = `${Math.round(fs)}px Lalezar, Vazirmatn, Tahoma, sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, 0, py + ph / 2 + s * 0.04);
+  ctx.restore();
+}
+
+function drawGate() {
+  const g = gate; if (!g) return;
+  const q = gateQ(g), hw = halfW(q), y = qToY(q), s = hw * (2 / 3) * 0.9;
+  const sc = 0.4 + 0.6 * easeOutBack(g.spawn);
+  const alpha = g.status === 'pass' ? 1 - clamp((g.pt - 0.35) / 0.65, 0, 1) : clamp(g.spawn * 2, 0, 1);
+  for (let i = 0; i < 3; i++) {
+    if (g.hide === i) continue;
+    let mode = 'n';
+    if (g.status === 'hit') mode = i === g.correct ? 'good' : i === carLane ? 'bad' : 'dim';
+    let sx = 0;
+    if (g.status === 'hit' && i === carLane) sx = Math.sin(g.hitT * 50) * s * 0.05 * Math.max(0, 1 - g.hitT);
+    drawBox(laneX(i, q) + sx, y, s, fa(g.opts[i]), LANE_COL[i], mode, sc, alpha);
+  }
+}
+
+function drawCar() {
+  const w = halfW(Q_CAR) * (2 / 3) * 0.6, h = w * 0.82;
+  let x = W / 2 + carOff * halfW(Q_CAR);
+  let y = qToY(Q_CAR) + Math.sin(time * 18) * (speed > .5 ? 0.8 : 0);
+  let rot = clamp((targetOff - carOff) * 0.28, -0.35, 0.35);
+  if (state === 'playing' && gate && gate.status === 'hit') {
+    x += Math.sin(gate.hitT * 45) * 4 * Math.max(0, 1 - gate.hitT);
+    rot += Math.sin(gate.hitT * 12) * 0.12 * Math.max(0, 1 - gate.hitT);
+  }
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
+  ctx.fillStyle = 'rgba(0,0,0,.28)';
+  ctx.beginPath(); ctx.ellipse(0, 2, w * 0.56, h * 0.12, 0, 0, 7); ctx.fill();
+  ctx.fillStyle = '#14172a';
+  rfill(-w * 0.52, -h * 0.36, w * 0.2, h * 0.4, w * 0.05);
+  rfill(w * 0.32, -h * 0.36, w * 0.2, h * 0.4, w * 0.05);
+  ctx.fillStyle = '#ff4b3a';
+  rfill(-w * 0.47, -h * 0.66, w * 0.94, h * 0.52, w * 0.12);
+  ctx.fillStyle = '#d93a2b';
+  ctx.beginPath();
+  ctx.moveTo(-w * 0.36, -h * 0.62); ctx.lineTo(-w * 0.27, -h * 1.0);
+  ctx.lineTo(w * 0.27, -h * 1.0); ctx.lineTo(w * 0.36, -h * 0.62);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#bfe8ff';
+  ctx.beginPath();
+  ctx.moveTo(-w * 0.29, -h * 0.66); ctx.lineTo(-w * 0.22, -h * 0.94);
+  ctx.lineTo(w * 0.22, -h * 0.94); ctx.lineTo(w * 0.29, -h * 0.66);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.55)';
+  ctx.beginPath();
+  ctx.moveTo(-w * 0.2, -h * 0.68); ctx.lineTo(-w * 0.15, -h * 0.92);
+  ctx.lineTo(-w * 0.07, -h * 0.92); ctx.lineTo(-w * 0.12, -h * 0.68);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#ffd23f';
+  rfill(-w * 0.43, -h * 0.54, w * 0.18, h * 0.13, w * 0.03);
+  rfill(w * 0.25, -h * 0.54, w * 0.18, h * 0.13, w * 0.03);
+  ctx.fillStyle = '#2a2f4a';
+  rfill(-w * 0.45, -h * 0.22, w * 0.9, h * 0.1, w * 0.04);
+  ctx.fillStyle = '#fff';
+  rfill(-w * 0.13, -h * 0.36, w * 0.26, h * 0.13, w * 0.02);
+  ctx.restore();
+}
+
+function drawParticles() {
+  for (const p of particles) {
+    const k = 1 - p.age / p.life;
+    ctx.save();
+    if (p.kind === 'conf') {
+      ctx.globalAlpha = clamp(k * 1.5, 0, 1);
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = p.color; ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+    } else if (p.kind === 'smoke') {
+      ctx.globalAlpha = k * 0.6;
+      ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size * (1.4 - k * 0.5), 0, 7); ctx.fill();
+    } else {
+      ctx.globalAlpha = clamp(k * 2, 0, 1);
+      ctx.font = `${p.size}px Lalezar, Vazirmatn, sans-serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.lineWidth = 5; ctx.strokeStyle = '#1b2140'; ctx.strokeText(p.text, p.x, p.y);
+      ctx.fillStyle = p.color; ctx.fillText(p.text, p.x, p.y);
+    }
+    ctx.restore();
+  }
+}
+
+function draw() {
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (shake > 0) ctx.translate((Math.random() - .5) * 10 * shake, (Math.random() - .5) * 10 * shake);
+  drawScene();
+  drawTrees();
+  const front = gate && gate.status !== 'approach';
+  if (gate && !front) drawGate();
+  drawCar();
+  if (gate && front) drawGate();
+  drawParticles();
+  ctx.restore();
+  if (flash > 0) { ctx.fillStyle = `rgba(255,60,50,${flash * 0.35})`; ctx.fillRect(0, 0, W, H); }
+  else if (flash < 0) { ctx.fillStyle = `rgba(120,255,160,${-flash * 0.3})`; ctx.fillRect(0, 0, W, H); }
+}
+
+/* ============ حلقه اصلی ============ */
+let prev = performance.now();
+function frame(now) {
+  const dt = Math.min((now - prev) / 1000, 0.05);
+  prev = now;
+  step(dt);
+  draw();
+  requestAnimationFrame(frame);
+}
+
+/* ============ کنترل ============ */
+function canSteer() { return state === 'playing' && gate && gate.status !== 'hit'; }
+function setLane(l) {
+  if (!canSteer()) return;
+  l = clamp(l, 0, 2);
+  if (l !== carLane) { carLane = l; targetOff = (l - 1) * 2 / 3; sfx.move(); }
+}
+
+addEventListener('keydown', e => {
+  if (e.target && e.target.tagName === 'INPUT') return;
+  const k = e.key;
+  if (k === 'ArrowLeft' || k === 'a' || k === 'A') { setLane(carLane - 1); e.preventDefault(); }
+  else if (k === 'ArrowRight' || k === 'd' || k === 'D') { setLane(carLane + 1); e.preventDefault(); }
+  else if ((k === 'ArrowUp' || k === 'w' || k === 'W' || k === ' ') && state === 'playing') {
+    turbo = true; $('turbo').classList.add('on'); e.preventDefault();
+  }
+});
+addEventListener('keyup', e => {
+  if (['ArrowUp', 'w', 'W', ' '].includes(e.key)) { turbo = false; $('turbo').classList.remove('on'); }
+});
+addEventListener('blur', () => { turbo = false; $('turbo').classList.remove('on'); });
+
+let dragging = false;
+function laneFromEvent(e) {
+  const r = cv.getBoundingClientRect();
+  const rel = e.clientX - r.left - W / 2;
+  const bw = halfW(Q_CAR) / 3;
+  setLane(rel < -bw ? 0 : rel > bw ? 2 : 1);
+}
+cv.addEventListener('pointerdown', e => { dragging = true; try { cv.setPointerCapture(e.pointerId); } catch (_) {} laneFromEvent(e); });
+cv.addEventListener('pointermove', e => { if (dragging) laneFromEvent(e); });
+['pointerup', 'pointercancel'].forEach(ev => cv.addEventListener(ev, () => dragging = false));
+
+$('left').addEventListener('pointerdown', e => { e.preventDefault(); setLane(carLane - 1); });
+$('right').addEventListener('pointerdown', e => { e.preventDefault(); setLane(carLane + 1); });
+const tb = $('turbo');
+const turboOn = e => { e.preventDefault(); if (state === 'playing') { turbo = true; tb.classList.add('on'); } };
+const turboOff = () => { turbo = false; tb.classList.remove('on'); };
+tb.addEventListener('pointerdown', turboOn);
+['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => tb.addEventListener(ev, turboOff));
+
+$('startBtn').addEventListener('click', startGame);
+$('againBtn').addEventListener('click', startGame);
+$('mute').addEventListener('click', () => {
+  muted = !muted; $('mute').textContent = muted ? '🔇' : '🔊';
+});
+
+/* ============ شروع ============ */
+$('nameInput').value = playerName;
+$('nameInput').addEventListener('input', e => {
+  const nm = e.target.value.trim().slice(0, 16);
+  e.target.classList.remove('need');
+  playerName = nm;
+  best = nm ? loadBest(nm) : 0;
+  $('bestStart').textContent = fa(best);
+  hud();
+});
+$('nameInput').addEventListener('keydown', e => { if (e.key === 'Enter') startGame(); });
+$('bestStart').textContent = fa(best);
+hud();
+resize();
+if (document.fonts && document.fonts.load) {
+  document.fonts.load('40px Lalezar', '۰۱۲۳۴۵۶۷۸۹×؟');
+  document.fonts.load('800 16px Vazirmatn', 'مرحله');
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
