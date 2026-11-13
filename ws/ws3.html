@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>کاربرگ ۱ – ریاضی پایه دوم</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vazirmatn/33.003/Vazirmatn-font-face.css">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#dff3ff; --ink:#25306b; --soft:#56619c; --card:#ffffff; --line:#cfdff3;
+  --hero1:#4cc9f0; --hero2:#7b5cff;
+  --c1:#e2442d; --t1:#ffe6df;
+  --c2:#0f9d6e; --t2:#d9f6ec;
+  --c3:#6a4cf0; --t3:#e9e3ff;
+  --c4:#f5a600; --t4:#fff1c7; --on4:#3b2a00;
+  --ok:#0f8f5f; --bad:#d92d3a; --tally:#e2442d;
+  --dot:rgba(37,48,107,.07);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme: dark;
+    --bg:#0f1738; --ink:#eef1ff; --soft:#b3bcec; --card:#19224f; --line:#34428a;
+    --hero1:#1f7fb3; --hero2:#4a37b8;
+    --c1:#ff7a63; --t1:#3d2420;
+    --c2:#2fd0a0; --t2:#143a30;
+    --c3:#9d86ff; --t3:#2a2459;
+    --c4:#ffc23d; --t4:#3d3210;
+    --ok:#47d99b; --bad:#ff7b84; --tally:#ff8a73;
+    --dot:rgba(255,255,255,.06);
+  }
+  .btn{color:#101636 !important}
+  .qnum{color:#101636 !important}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  margin:0; color:var(--ink); background:var(--bg);
+  background-image:radial-gradient(var(--dot) 2px, transparent 2px);
+  background-size:26px 26px;
+  font-family:'Vazirmatn','Vazir',Tahoma,'Segoe UI',system-ui,sans-serif;
+  line-height:1.8; font-size:17px;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.wrap{max-width:560px;margin:0 auto;padding:0 14px 40px}
+
+/* ---------- Hero ---------- */
+.hero{
+  margin:0 -14px; padding:22px 18px 46px; text-align:center; color:#fff;
+  background:linear-gradient(160deg,var(--hero1),var(--hero2));
+  border-radius:0 0 40px 40px; position:relative; overflow:hidden;
+}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.14)}
+.hero::before{width:130px;height:130px;top:-40px;left:-30px}
+.hero::after{width:90px;height:90px;bottom:10px;right:-20px}
+.bless{font-size:16px;opacity:.95;position:relative}
+.hero h1{margin:6px 0 0;font-size:40px;font-weight:900;letter-spacing:-.5px;position:relative;text-shadow:0 4px 0 rgba(0,0,0,.18)}
+.kid{
+  width:74px;height:74px;border-radius:50%;background:#fff;margin:0 auto 4px;
+  display:grid;place-items:center;font-size:44px;border:5px solid #ffd166;position:relative;
+  box-shadow:0 5px 0 rgba(0,0,0,.18);
+}
+
+/* ---------- Info ---------- */
+.info{
+  background:var(--card); border-radius:26px; padding:14px; margin-top:-26px; position:relative;
+  border:3px solid var(--line); box-shadow:0 6px 0 var(--line);
+}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.chip{border-radius:999px;padding:2px 14px;font-weight:700;font-size:15px}
+.chip.a{background:var(--t1)} .chip.b{background:var(--t2)} .chip.c{background:var(--t3)}
+.concept{font-size:14px;color:var(--soft);margin:0 0 10px}
+.fields{display:grid;grid-template-columns:1.5fr 1fr;gap:10px}
+.fields label{display:block;font-size:14px;font-weight:700;color:var(--soft)}
+.fields input{margin-top:2px}
+
+/* ---------- Stars progress ---------- */
+.stars{
+  position:sticky;top:8px;z-index:20;margin:16px auto 6px;width:max-content;max-width:100%;
+  display:flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;
+  background:var(--card);border:3px solid var(--line);box-shadow:0 4px 0 var(--line);
+}
+.stars b{font-size:14px;color:var(--soft);margin-inline-end:4px}
+.star{font-size:26px;line-height:1;text-decoration:none;filter:grayscale(1) opacity(.3);transition:filter .2s}
+.star.on{filter:none;animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.6) rotate(-12deg)}100%{transform:scale(1)}}
+
+/* ---------- Question cards ---------- */
+.q{
+  --c:var(--c1);--t:var(--t1);--on:#fff;
+  background:var(--card);border:3px solid var(--c);border-radius:28px;
+  padding:16px 14px 14px;margin-top:22px;box-shadow:0 7px 0 var(--c);scroll-margin-top:70px;
+}
+.q.q2{--c:var(--c2);--t:var(--t2)}
+.q.q3{--c:var(--c3);--t:var(--t3)}
+.q.q4{--c:var(--c4);--t:var(--t4);--on:var(--on4)}
+.qhead{display:flex;gap:10px;align-items:flex-start}
+.qnum{
+  flex:none;width:42px;height:42px;border-radius:50%;background:var(--c);color:var(--on);
+  display:grid;place-items:center;font-size:22px;font-weight:900;
+}
+.qhead h2{margin:0;font-size:17px;font-weight:700;line-height:1.9}
+.hint{margin:6px 0 0;font-size:14px;color:var(--soft)}
+.stage{background:var(--t);border-radius:20px;padding:12px;margin:12px 0}
+
+/* inputs */
+input[type=text]{
+  width:100%;font:inherit;font-size:18px;font-weight:700;text-align:center;color:var(--ink);
+  background:var(--card);border:3px solid var(--line);border-radius:14px;padding:6px 8px;min-height:46px;
+}
+input[type=text]:focus-visible,button:focus-visible,.pad:focus-visible{outline:4px solid var(--c4);outline-offset:2px}
+input.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,var(--card))}
+input.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--card))}
+
+/* buttons */
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{
+  font:inherit;font-weight:800;font-size:17px;border:0;border-radius:16px;padding:8px 18px;min-height:46px;
+  background:var(--c);color:var(--on);cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.22);
+  transition:transform .08s, box-shadow .08s;
+}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.22)}
+.btn.ghost{background:transparent;color:var(--ink);border:3px solid var(--line);box-shadow:none;font-weight:700}
+.fb{flex:1;min-width:150px;font-weight:800;font-size:15px;line-height:1.7}
+.fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
+
+/* Q1 */
+.cars{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.car{
+  position:relative;aspect-ratio:1;border:0;background:var(--card);border-radius:14px;font-size:clamp(24px,8vw,38px);
+  cursor:pointer;padding:0;line-height:1;color:inherit;
+}
+.car .badge{
+  position:absolute;top:-4px;inset-inline-start:-4px;min-width:22px;height:22px;border-radius:11px;padding:0 4px;
+  background:var(--c);color:var(--on);font-size:13px;font-weight:900;display:none;place-items:center;
+}
+.car.on{background:var(--card);outline:3px solid var(--c)}
+.car.on .badge{display:grid}
+.car.shake{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(4px)}75%{transform:translateX(-4px)}}
+.counter{font-weight:800;color:var(--soft);font-size:15px;margin-top:8px;text-align:center}
+.pair{display:grid;grid-template-columns:auto 1fr;gap:8px 10px;align-items:center;margin-top:12px}
+.pair label{font-weight:800}
+
+/* Q2 */
+.fig{background:var(--card);border-radius:18px;padding:10px;text-align:center}
+.fig svg{display:block;margin:0 auto;max-width:100%;height:auto}
+.fig input{margin-top:8px}
+.figs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.fig.wide svg{width:100%;max-width:300px}
+.figs .fig svg{width:100%;max-width:150px}
+
+/* Q3 */
+.palette{display:flex;gap:8px;justify-content:center;margin-bottom:10px}
+.pick{font-size:28px;background:var(--card);border:3px solid transparent;border-radius:14px;width:54px;height:54px;cursor:pointer;line-height:1;padding:0}
+.pick[aria-pressed=true]{border-color:var(--c3);background:var(--t3)}
+.shape-row{display:grid;grid-template-columns:50px 1fr auto;gap:8px;align-items:center;margin-bottom:10px}
+.target{
+  width:50px;height:50px;border-radius:50%;background:var(--c);color:var(--on);display:grid;place-items:center;
+  font-size:28px;font-weight:900;
+}
+.pad{
+  min-height:84px;background:var(--card);border:3px dashed var(--c);border-radius:18px;padding:6px;
+  display:flex;flex-wrap:wrap;gap:2px;align-content:flex-start;cursor:copy;
+}
+.pad.ok{border-style:solid;border-color:var(--ok)} .pad.bad{border-style:solid;border-color:var(--bad)}
+.pad .s{font-size:26px;line-height:1.1;background:none;border:0;padding:2px;cursor:pointer;border-radius:8px}
+.side{display:grid;gap:6px;justify-items:center;font-weight:800;font-size:14px;color:var(--soft)}
+.mini{width:42px;height:42px;border-radius:12px;border:3px solid var(--line);background:var(--card);color:var(--ink);font-size:18px;cursor:pointer;padding:0}
+
+/* Q4 */
+.objs{display:flex;flex-wrap:wrap;gap:4px 6px;justify-content:center}
+.obj{
+  font-size:clamp(28px,9vw,40px);line-height:1;background:var(--card);border:3px solid transparent;border-radius:16px;
+  padding:4px 6px;cursor:pointer;position:relative;color:inherit;
+}
+.obj.on{opacity:.45;border-color:var(--c)}
+.obj.on::after{content:"✔";position:absolute;inset:auto 2px 0 auto;font-size:16px;color:var(--ok);font-weight:900}
+.tbl{display:grid;grid-template-columns:62px repeat(3,1fr);gap:6px;margin-top:12px}
+.tbl>div{background:var(--card);border-radius:14px;padding:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:52px}
+.tbl .th{font-size:34px;background:var(--t4);line-height:1.2}
+.tbl .lab{font-weight:800;font-size:14px;color:var(--soft);text-align:center;line-height:1.4}
+.marks{min-height:34px;display:flex;flex-wrap:wrap;justify-content:center;align-items:center}
+.tg{display:inline-flex;gap:4px;position:relative;margin:2px 5px;padding:0 1px}
+.tg i{width:4px;height:26px;background:var(--ink);border-radius:3px}
+.tg.full::after{
+  content:"";position:absolute;left:-4px;right:-4px;top:calc(50% - 2px);height:4px;border-radius:3px;
+  background:var(--tally);transform:rotate(-24deg);
+}
+.ctl{display:flex;gap:6px;margin-top:6px}
+.ctl button{width:36px;height:36px;border-radius:50%;border:0;background:var(--c4);color:var(--on4);font-size:20px;font-weight:900;cursor:pointer;line-height:1;padding:0}
+.ctl button.minus{background:var(--line);color:var(--ink)}
+.tbl input{padding:2px 4px;min-height:44px}
+
+/* win */
+.win{display:none;text-align:center;background:var(--card);border:3px solid var(--c4);border-radius:28px;padding:20px;margin-top:24px;box-shadow:0 7px 0 var(--c4)}
+.win.show{display:block}
+.win .trophy{font-size:64px;line-height:1.1}
+.win h2{margin:4px 0 4px;font-size:24px}
+.conf{position:fixed;top:-40px;z-index:50;pointer-events:none;animation:fall 2.8s linear forwards}
+@keyframes fall{to{transform:translateY(112vh) rotate(380deg)}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kid" aria-hidden="true">🧒</div>
+    <div class="bless">آفریدگار مهربان همراه من است</div>
+    <h1>کاربرگ ۱</h1>
+  </header>
+
+  <section class="info" aria-label="اطلاعات کاربرگ">
+    <div class="chips">
+      <span class="chip a">درس: ریاضی</span>
+      <span class="chip b">پایه: دوم</span>
+      <span class="chip c">فصل ۱، عدد و رقم</span>
+    </div>
+    <p class="concept">مفهوم: درک عددی / بازنمایی اعداد / آمار (صفحه‌ی ۲ و ۳)</p>
+    <div class="fields">
+      <label>نام دانش‌آموز<input type="text" id="stuName" placeholder="اسمت را بنویس" autocomplete="off"></label>
+      <label>تاریخ<input type="text" id="stuDate" autocomplete="off"></label>
+    </div>
+  </section>
+
+  <nav class="stars" aria-label="پیشرفت">
+    <b>ستاره‌هایم</b>
+    <a class="star" href="#q1" aria-label="سؤال ۱">⭐</a>
+    <a class="star" href="#q2" aria-label="سؤال ۲">⭐</a>
+    <a class="star" href="#q3" aria-label="سؤال ۳">⭐</a>
+    <a class="star" href="#q4" aria-label="سؤال ۴">⭐</a>
+  </nav>
+
+  <!-- ============ سؤال ۱ ============ -->
+  <section class="q q1" id="q1">
+    <div class="qhead"><div class="qnum">۱</div>
+      <div><h2>در شکل رو به رو، چند ماشین وجود دارد؟ بشمار و بنویس.</h2>
+      <p class="hint">روی هر ماشین بزن تا شماره‌اش بیاید.</p></div></div>
+    <div class="stage">
+      <div class="cars" id="cars"></div>
+      <div class="counter" id="carCount" aria-live="polite">شمردم: ۰</div>
+    </div>
+    <div class="pair">
+      <label for="q1n">به عدد:</label><input type="text" id="q1n" inputmode="numeric" autocomplete="off" placeholder="؟">
+      <label for="q1w">به حروف:</label><input type="text" id="q1w" autocomplete="off" placeholder="با حروف بنویس">
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn" id="chk1">بررسی کن ✔</button>
+      <button class="btn ghost" id="rst1">از نو</button>
+      <div class="fb" id="fb1" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ============ سؤال ۲ ============ -->
+  <section class="q q2" id="q2">
+    <div class="qhead"><div class="qnum">۲</div>
+      <div><h2>هر کدام از شکل‌ها، چه عددی را نشان می‌دهند؟</h2>
+      <p class="hint">هر ۵ تا چوب‌خط، یک بسته است: چهار خط و یک خط مورب.</p></div></div>
+    <div class="stage">
+      <div class="fig wide">
+        <svg id="svgTally" viewBox="0 0 280 70" role="img" aria-label="چوب خط"></svg>
+        <input type="text" id="q2a" inputmode="numeric" autocomplete="off" placeholder="؟" aria-label="عدد چوب خط">
+      </div>
+      <div class="figs">
+        <div class="fig">
+          <svg id="svgCircle" viewBox="0 0 100 100" role="img" aria-label="دایره"></svg>
+          <input type="text" id="q2b" inputmode="numeric" autocomplete="off" placeholder="؟" aria-label="عدد دایره">
+        </div>
+        <div class="fig">
+          <svg id="svgTri" viewBox="0 0 160 125" role="img" aria-label="مثلث‌ها"></svg>
+          <input type="text" id="q2c" inputmode="numeric" autocomplete="off" placeholder="؟" aria-label="عدد مثلث‌ها">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn" id="chk2">بررسی کن ✔</button>
+      <button class="btn ghost" id="rst2">از نو</button>
+      <div class="fb" id="fb2" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ============ سؤال ۳ ============ -->
+  <section class="q q3" id="q3">
+    <div class="qhead"><div class="qnum">۳</div>
+      <div><h2>به تعداد عددهای داده شده، شکل بکش.</h2>
+      <p class="hint">یک شکل انتخاب کن و داخل کادر بزن. برای پاک کردن، روی خود شکل بزن.</p></div></div>
+    <div class="stage">
+      <div class="palette" id="palette" role="group" aria-label="انتخاب شکل"></div>
+      <div id="shapeRows"></div>
+    </div>
+    <div class="row">
+      <button class="btn" id="chk3">بررسی کن ✔</button>
+      <button class="btn ghost" id="rst3">از نو</button>
+      <div class="fb" id="fb3" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ============ سؤال ۴ ============ -->
+  <section class="q q4" id="q4">
+    <div class="qhead"><div class="qnum">۴</div>
+      <div><h2>شکل‌های زیر را بشمار و در جدول برای هر شکل چوب خط کشیده و تعداد آن را بنویس.</h2>
+      <p class="hint">با زدن روی هر شکل، آن را تیک بزن تا دوبار نشماری. بعد با دکمه‌ی + چوب‌خط بکش.</p></div></div>
+    <div class="stage">
+      <div class="objs" id="objs"></div>
+    </div>
+    <div class="tbl" id="tbl"></div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn" id="chk4">بررسی کن ✔</button>
+      <button class="btn ghost" id="rst4">از نو</button>
+      <div class="fb" id="fb4" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="win" id="win" aria-live="polite">
+    <div class="trophy">🏆</div>
+    <h2>آفرین! هر چهار ستاره را گرفتی!</h2>
+    <p style="margin:0 0 12px;color:var(--soft)">تو یک قهرمان شمارشی.</p>
+    <button class="btn" id="again" style="--c:var(--c4);--on:var(--on4)">دوباره بازی کن</button>
+  </section>
+
+</div>
+
+<script>
+/* ---------- ابزارها ---------- */
+const $ = (s, r=document) => r.querySelector(s);
+const fa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const norm = s => String(s || '')
+  .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+  .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+  .replace(/ي/g,'ی').replace(/ك/g,'ک').replace(/[\u200c\u200f\s]/g,'').trim();
+const svgNS = 'http://www.w3.org/2000/svg';
+const GOOD = ['آفرین! 🌟','عالی بود! 🎉','دمت گرم! 👏','درست شد! ⭐'];
+const good = () => GOOD[Math.floor(Math.random()*GOOD.length)];
+
+function setFb(el, ok, text){ el.textContent = text; el.className = 'fb ' + (ok ? 'ok' : 'bad'); }
+function state(inp, ok){ inp.classList.toggle('ok', ok); inp.classList.toggle('bad', !ok); }
+function clearState(inp){ inp.classList.remove('ok','bad'); }
+document.querySelectorAll('input[type=text]').forEach(i => i.addEventListener('input', () => clearState(i)));
+
+const solved = [false,false,false,false];
+const starEls = [...document.querySelectorAll('.star')];
+function markSolved(i){
+  if(solved[i]) return;
+  solved[i] = true;
+  starEls[i].classList.add('on');
+  burst(10);
+  if(solved.every(Boolean)){
+    $('#win').classList.add('show');
+    burst(36);
+    setTimeout(() => $('#win').scrollIntoView({behavior:'smooth', block:'center'}), 400);
+  }
+}
+function burst(n){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const em = ['🎉','⭐','🎈','✨','🌈','🍭'];
+  for(let i=0;i<n;i++){
+    const s = document.createElement('span');
+    s.className = 'conf';
+    s.textContent = em[i % em.length];
+    s.style.left = Math.random()*96 + 'vw';
+    s.style.animationDelay = (Math.random()*.7) + 's';
+    s.style.fontSize = (18 + Math.random()*18) + 'px';
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 3800);
+  }
+}
+
+/* ---------- نام و تاریخ ---------- */
+try{
+  $('#stuDate').value = new Date().toLocaleDateString('fa-IR-u-ca-persian', {year:'numeric', month:'2-digit', day:'2-digit'});
+}catch(e){}
+
+/* ---------- سؤال ۱ ---------- */
+const carsBox = $('#cars');
+let carN = 0;
+for(let i=0;i<17;i++){
+  const b = document.createElement('button');
+  b.className = 'car';
+  b.type = 'button';
+  b.setAttribute('aria-label', 'ماشین');
+  b.innerHTML = '🚗<span class="badge"></span>';
+  b.addEventListener('click', () => {
+    if(!b.dataset.n){
+      carN++; b.dataset.n = carN;
+      b.classList.add('on'); $('.badge', b).textContent = fa(carN);
+    } else if(+b.dataset.n === carN){
+      delete b.dataset.n; b.classList.remove('on'); carN--;
+    } else {
+      b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+    }
+    $('#carCount').textContent = 'شمردم: ' + fa(carN);
+  });
+  carsBox.appendChild(b);
+}
+$('#chk1').onclick = () => {
+  const n = $('#q1n'), w = $('#q1w'), fb = $('#fb1');
+  if(!norm(n.value) && !norm(w.value)){ setFb(fb,false,'اول عدد و حروف را بنویس ✏️'); return; }
+  const nOk = norm(n.value) === '17';
+  const wOk = norm(w.value) === 'هفده';
+  state(n, nOk); state(w, wOk);
+  if(nOk && wOk){ setFb(fb,true,good()); markSolved(0); }
+  else if(nOk){ setFb(fb,false,'عدد درست است! حروفش را دوباره بنویس 🤔'); }
+  else if(wOk){ setFb(fb,false,'حروف درست است! عدد را دوباره بنویس 🤔'); }
+  else { setFb(fb,false,'یک بار دیگر بشمار؛ روی هر ماشین بزن 💪'); }
+};
+$('#rst1').onclick = resetQ1;
+function resetQ1(){
+  [...carsBox.children].forEach(b => { delete b.dataset.n; b.classList.remove('on'); });
+  carN = 0; $('#carCount').textContent = 'شمردم: ۰';
+  ['#q1n','#q1w'].forEach(s => { $(s).value=''; clearState($(s)); });
+  $('#fb1').textContent = ''; $('#fb1').className = 'fb';
+}
+
+/* ---------- سؤال ۲ ---------- */
+(function drawFigures(){
+  /* چوب خط: ۲ بسته‌ی پنج‌تایی + ۲ خط = ۱۲ */
+  const t = $('#svgTally');
+  let h = '';
+  const grp = x0 => {
+    let s = '';
+    [10,28,46,64].forEach(dx => s += `<line x1="${x0+dx}" y1="10" x2="${x0+dx}" y2="60"/>`);
+    s += `<line class="sl" x1="${x0}" y1="48" x2="${x0+78}" y2="22"/>`;
+    return s;
+  };
+  h += grp(4) + grp(100);
+  h += '<line x1="212" y1="10" x2="212" y2="60"/><line x1="234" y1="10" x2="234" y2="60"/>';
+  t.innerHTML = `<g stroke="var(--ink)" stroke-width="6" stroke-linecap="round">${h}</g>`;
+  t.querySelectorAll('.sl').forEach(l => l.setAttribute('stroke','var(--tally)'));
+
+  /* دایره‌ی ۸ قسمتی */
+  const c = $('#svgCircle');
+  const cols = ['#ffd166','#8fd3ff'];
+  let ch = '';
+  for(let i=0;i<8;i++){
+    const a0 = (i*45 - 90) * Math.PI/180, a1 = ((i+1)*45 - 90) * Math.PI/180;
+    const x0 = 50 + 46*Math.cos(a0), y0 = 50 + 46*Math.sin(a0);
+    const x1 = 50 + 46*Math.cos(a1), y1 = 50 + 46*Math.sin(a1);
+    ch += `<path d="M50 50 L${x0.toFixed(2)} ${y0.toFixed(2)} A46 46 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z" fill="${cols[i%2]}" stroke="#25306b" stroke-width="2.5" stroke-linejoin="round"/>`;
+  }
+  c.innerHTML = ch;
+
+  /* مثلث‌ها: ۱ + ۲ + ۳ = ۶ */
+  const tr = $('#svgTri');
+  const fills = ['#ff9f8a','#ffd166','#7fdcb8','#b3a2ff','#8fd3ff','#ff9fd0'];
+  let k = 0, th = '';
+  const w = 48, hh = 40;
+  for(let r=0;r<3;r++){
+    for(let j=0;j<=r;j++){
+      const cx = 80 + (j - r/2) * w, y = 8 + r*hh;
+      th += `<polygon points="${cx},${y} ${cx-w/2},${y+hh} ${cx+w/2},${y+hh}" fill="${fills[k++ % fills.length]}" stroke="#25306b" stroke-width="2.5" stroke-linejoin="round"/>`;
+    }
+  }
+  tr.innerHTML = th;
+})();
+$('#chk2').onclick = () => {
+  const ins = ['#q2a','#q2b','#q2c'].map(s => $(s));
+  const ans = ['12','8','6'];
+  const fb = $('#fb2');
+  if(ins.every(i => !norm(i.value))){ setFb(fb,false,'اول عددها را بنویس ✏️'); return; }
+  let right = 0;
+  ins.forEach((inp,i) => { const ok = norm(inp.value) === ans[i]; state(inp, ok); if(ok) right++; });
+  if(right === 3){ setFb(fb,true,good()); markSolved(1); }
+  else { setFb(fb,false, right ? `${fa(right)} تا درست بود! قرمزها را دوباره بشمار 💪` : 'دوباره بشمار؛ تو می‌توانی! 💪'); }
+};
+$('#rst2').onclick = resetQ2;
+function resetQ2(){
+  ['#q2a','#q2b','#q2c'].forEach(s => { $(s).value=''; clearState($(s)); });
+  $('#fb2').textContent=''; $('#fb2').className='fb';
+}
+
+/* ---------- سؤال ۳ ---------- */
+const SHAPES = ['⭐','🌸','🍎','🐠'];
+const TARGETS = [4,7,5];
+const MAX_SHAPES = 14;
+let curShape = SHAPES[0];
+const boxes = TARGETS.map(() => []);
+const pal = $('#palette');
+SHAPES.forEach((s,i) => {
+  const b = document.createElement('button');
+  b.type='button'; b.className='pick'; b.textContent=s;
+  b.setAttribute('aria-pressed', i===0);
+  b.setAttribute('aria-label','شکل ' + s);
+  b.onclick = () => { curShape = s; [...pal.children].forEach(x => x.setAttribute('aria-pressed', x===b)); };
+  pal.appendChild(b);
+});
+const rowsBox = $('#shapeRows');
+const pads = [], cnts = [];
+TARGETS.forEach((t,idx) => {
+  const row = document.createElement('div');
+  row.className = 'shape-row';
+  row.innerHTML = `<div class="target" aria-label="عدد ${fa(t)}">${fa(t)}</div>
+    <div class="pad" tabindex="0" role="button" aria-label="کادر برای کشیدن ${fa(t)} شکل"></div>
+    <div class="side"><span class="cnt">۰</span><button class="mini" type="button" aria-label="برگرداندن">↩</button></div>`;
+  const pad = $('.pad', row), cnt = $('.cnt', row);
+  const render = () => {
+    pad.innerHTML = '';
+    boxes[idx].forEach((s,i) => {
+      const b = document.createElement('button');
+      b.type='button'; b.className='s'; b.textContent=s; b.setAttribute('aria-label','پاک کردن');
+      b.onclick = e => { e.stopPropagation(); boxes[idx].splice(i,1); pad.classList.remove('ok','bad'); render(); };
+      pad.appendChild(b);
+    });
+    cnt.textContent = fa(boxes[idx].length);
+  };
+  const add = () => { if(boxes[idx].length < MAX_SHAPES){ boxes[idx].push(curShape); pad.classList.remove('ok','bad'); render(); } };
+  pad.onclick = add;
+  pad.onkeydown = e => { if(e.target === pad && (e.key==='Enter' || e.key===' ')){ e.preventDefault(); add(); } };
+  $('.mini', row).onclick = () => { boxes[idx].pop(); pad.classList.remove('ok','bad'); render(); };
+  row.render = render;
+  rowsBox.appendChild(row); pads.push(pad); cnts.push(row);
+});
+$('#chk3').onclick = () => {
+  const fb = $('#fb3');
+  if(boxes.every(b => !b.length)){ setFb(fb,false,'اول داخل کادرها شکل بکش 🎨'); return; }
+  let right = 0;
+  TARGETS.forEach((t,i) => {
+    const ok = boxes[i].length === t;
+    pads[i].classList.toggle('ok', ok); pads[i].classList.toggle('bad', !ok);
+    if(ok) right++;
+  });
+  if(right === 3){ setFb(fb,true,good()); markSolved(2); }
+  else { setFb(fb,false, right ? `${fa(right)} کادر درست است! قرمزها را درست کن 💪` : 'عددها را دوباره نگاه کن 💪'); }
+};
+$('#rst3').onclick = resetQ3;
+function resetQ3(){
+  boxes.forEach((b,i) => { b.length = 0; pads[i].classList.remove('ok','bad'); cnts[i].render(); });
+  $('#fb3').textContent=''; $('#fb3').className='fb';
+}
+
+/* ---------- سؤال ۴ ---------- */
+const CAR='🚗', BIKE='🚲', BEAR='🧸';
+const ORDER = [CAR,BIKE,CAR,BEAR,CAR,CAR,BIKE, BIKE,BEAR,CAR,BIKE,CAR,BEAR,CAR,BEAR,BIKE];
+const TILTS = [-6,5,-3,7,-8,4,-5,6,-4,8,-6,3,-7,5,-3,6];
+const objsBox = $('#objs');
+ORDER.forEach((e,i) => {
+  const b = document.createElement('button');
+  b.type='button'; b.className='obj'; b.textContent=e;
+  b.style.transform = `rotate(${TILTS[i]}deg)`;
+  b.setAttribute('aria-pressed','false');
+  b.setAttribute('aria-label', e===CAR?'ماشین':e===BIKE?'دوچرخه':'خرس');
+  b.onclick = () => { const on = b.classList.toggle('on'); b.setAttribute('aria-pressed', on); };
+  objsBox.appendChild(b);
+});
+const COLS = [{k:'car',e:CAR,ans:7},{k:'bike',e:BIKE,ans:5},{k:'bear',e:BEAR,ans:4}];
+const tally = {car:0,bike:0,bear:0};
+const tbl = $('#tbl');
+tbl.innerHTML = '<div class="th" aria-hidden="true"></div>' + COLS.map(c => `<div class="th">${c.e}</div>`).join('')
+  + '<div class="lab">چوب خط</div>' + COLS.map(c => `<div><div class="marks" id="m-${c.k}"></div><div class="ctl"><button class="minus" type="button" data-k="${c.k}" data-d="-1" aria-label="کم کن">−</button><button type="button" data-k="${c.k}" data-d="1" aria-label="یک خط اضافه کن">+</button></div></div>`).join('')
+  + '<div class="lab">عدد</div>' + COLS.map(c => `<div><input type="text" inputmode="numeric" autocomplete="off" id="n-${c.k}" placeholder="؟" aria-label="تعداد"></div>`).join('');
+function renderMarks(k){
+  const box = $('#m-'+k); box.innerHTML = '';
+  const n = tally[k];
+  for(let g=0; g<Math.floor(n/5); g++){
+    const d = document.createElement('span'); d.className='tg full'; d.innerHTML='<i></i><i></i><i></i><i></i>'; box.appendChild(d);
+  }
+  const r = n % 5;
+  if(r){ const d = document.createElement('span'); d.className='tg'; d.innerHTML='<i></i>'.repeat(r); box.appendChild(d); }
+}
+tbl.addEventListener('click', e => {
+  const b = e.target.closest('button[data-k]'); if(!b) return;
+  const k = b.dataset.k, d = +b.dataset.d;
+  tally[k] = Math.max(0, Math.min(20, tally[k] + d));
+  renderMarks(k);
+});
+tbl.addEventListener('input', e => { if(e.target.matches('input')) clearState(e.target); });
+$('#chk4').onclick = () => {
+  const fb = $('#fb4');
+  if(COLS.every(c => !tally[c.k] && !norm($('#n-'+c.k).value))){ setFb(fb,false,'اول بشمار و جدول را پر کن ✏️'); return; }
+  let tOk = true, nOk = true;
+  COLS.forEach(c => {
+    const inp = $('#n-'+c.k);
+    const ok = norm(inp.value) === String(c.ans);
+    state(inp, ok);
+    if(!ok) nOk = false;
+    if(tally[c.k] !== c.ans) tOk = false;
+  });
+  if(tOk && nOk){ setFb(fb,true,good()); markSolved(3); }
+  else if(tOk){ setFb(fb,false,'چوب‌خط‌ها درست است! عددها را دوباره بنویس 🤔'); }
+  else if(nOk){ setFb(fb,false,'عددها درست است! چوب‌خط‌ها را درست کن 🤔'); }
+  else { setFb(fb,false,'دوباره بشمار؛ روی هر شکل بزن تا تیک بخورد 💪'); }
+};
+$('#rst4').onclick = resetQ4;
+function resetQ4(){
+  [...objsBox.children].forEach(b => { b.classList.remove('on'); b.setAttribute('aria-pressed','false'); });
+  COLS.forEach(c => { tally[c.k]=0; renderMarks(c.k); const i=$('#n-'+c.k); i.value=''; clearState(i); });
+  $('#fb4').textContent=''; $('#fb4').className='fb';
+}
+
+/* ---------- شروع دوباره ---------- */
+$('#again').onclick = () => {
+  resetQ1(); resetQ2(); resetQ3(); resetQ4();
+  solved.fill(false); starEls.forEach(s => s.classList.remove('on'));
+  $('#win').classList.remove('show');
+  window.scrollTo({top:0, behavior:'smooth'});
+};
+</script>
+</body>
+</html>
