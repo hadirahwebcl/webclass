@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#176b87">
+<title>فلش‌کارت علوم سوم | فصل سوم</title>
+<style>
+:root{
+ --primary:#176b87;--secondary:#35a7a0;--accent:#f2b544;
+ --bg:#f2f8fb;--surface:#ffffff;--ink:#183247;--muted:#536b7a;
+ --good:#237448;--good-bg:#e2f5e8;--review:#a65312;--review-bg:#fff0dc;
+ --danger:#a83232;--danger-bg:#fff0f0;--border:#d5e3e9;
+ --shadow:0 12px 32px rgba(24,50,71,.10);--radius:22px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,"Segoe UI",sans-serif;font-size:17px;line-height:1.75}
+button,select{font:inherit}
+button,select{min-height:48px}
+button{cursor:pointer;border:0;border-radius:14px;padding:10px 16px;font-weight:700;transition:transform .15s,background .15s,box-shadow .15s}
+button:hover:not(:disabled){transform:translateY(-1px)}
+button:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #bb7100;outline-offset:3px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.primary-btn{background:var(--primary);color:#fff;box-shadow:0 4px 0 #0d4e65}
+.secondary-btn{background:#dff3f2;color:#104f58}
+.ghost-btn{background:#edf3f6;color:var(--ink);border:1px solid var(--border)}
+.danger-btn{background:var(--danger-bg);color:var(--danger);border:1px solid #efcaca}
+.app-header{background:linear-gradient(120deg,#176b87,#278c91);color:white;padding:24px clamp(16px,4vw,48px)}
+.header-inner{max-width:1400px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+h1{font-size:clamp(1.35rem,3vw,2rem);margin:0 0 4px;line-height:1.5}
+.subtitle{margin:0;color:#e6fbff;font-size:.98rem}
+.header-pill{border:1px solid #ffffff80;border-radius:999px;padding:7px 14px;white-space:nowrap;font-size:.9rem}
+.layout{max-width:1400px;margin:24px auto;padding:0 20px;display:grid;grid-template-columns:300px minmax(0,1fr);gap:24px;align-items:start}
+.sidebar{position:sticky;top:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);max-height:calc(100vh - 32px);overflow:auto}
+.sidebar-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.sidebar h2{font-size:1.15rem;margin:0 0 16px}.close-filter{display:none;background:#edf3f6;color:var(--ink);border:1px solid var(--border)}
+.field{display:block;margin:0 0 15px}
+.field label{display:block;font-size:.95rem;font-weight:700;margin-bottom:6px}
+select{width:100%;padding:9px 12px;background:#f8fbfc;color:var(--ink);border:1px solid #b8cdd7;border-radius:12px}
+.checkline{display:flex;gap:10px;align-items:center;margin:12px 0;min-height:48px}
+.checkline input{width:20px;height:20px;accent-color:var(--primary)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.stat{background:#edf7fa;border-radius:14px;padding:10px;text-align:center}
+.stat strong{display:block;font-size:1.35rem;color:var(--primary)}
+.stat span{font-size:.82rem;color:var(--muted)}
+.sidebar-actions{display:grid;gap:10px}
+.sidebar-actions .danger-btn{margin-top:8px}
+main{min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.mobile-filter{display:none}
+.round-status{color:var(--muted);font-size:.94rem}
+.progress-wrap{background:#dce9ee;height:10px;border-radius:99px;overflow:hidden;margin-bottom:22px}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--secondary),var(--primary));border-radius:99px;transition:width .25s}
+.card-stage{perspective:1200px;max-width:820px;margin:0 auto}
+.flashcard{position:relative;min-height:440px;transform-style:preserve-3d;transition:transform .6s ease;cursor:pointer;border-radius:28px;outline:none}
+.flashcard.is-flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:2px solid #b9dfe7;border-radius:28px;padding:clamp(22px,4vw,42px);display:flex;flex-direction:column;box-shadow:var(--shadow);overflow:hidden}
+.card-front{background:linear-gradient(145deg,#fff4bf,#ffe7a0)}
+.card-back{background:linear-gradient(145deg,#dff7e9,#d4f0ee);transform:rotateY(180deg)}
+.card-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#4c5b46;font-size:.9rem;font-weight:700}
+.topic-chip{background:#ffffffa8;border:1px solid #ffffff;border-radius:999px;padding:4px 12px;font-size:.82rem}
+.card-question{font-size:clamp(1.35rem,3vw,1.8rem);line-height:1.75;text-align:center;margin:auto 0;padding:24px 0;font-weight:800;overflow-wrap:anywhere}
+.card-back .card-question{font-size:clamp(1.1rem,2.5vw,1.4rem);text-align:right;margin:12px 0 4px}
+.answer-detail{overflow:auto;max-height:180px;padding:0 2px}
+.key-point{margin-top:12px;padding:10px 13px;background:#ffffffa8;border-right:4px solid var(--secondary);border-radius:10px;font-size:.95rem}
+.page-ref{margin-top:auto;padding-top:10px;color:#435d5c;font-size:.82rem}
+.card-hint{text-align:center;color:var(--muted);font-size:.88rem;margin:12px 0 18px}
+.card-controls{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}
+.card-controls button{min-width:130px}
+.mark-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.mark-actions button{min-width:155px}
+.learned-btn{background:var(--good-bg);color:var(--good);border:1px solid #9ed6b0}
+.review-btn{background:var(--review-bg);color:var(--review);border:1px solid #e9bf88}
+.star-btn{background:#fff5c9;color:#775400;border:1px solid #e9cd66}
+.star-btn[aria-pressed="true"]{background:#f5d75d}
+.end-panel,.empty-panel{max-width:820px;margin:0 auto;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:34px;text-align:center;box-shadow:var(--shadow)}
+.end-panel h2,.empty-panel h2{margin-top:0;color:var(--primary)}
+.end-icon{font-size:3rem}
+.notice{font-size:.9rem;color:var(--muted);margin-top:18px}
+.mobile-drawer-backdrop{display:none}
+dialog{max-width:440px;width:calc(100% - 32px);border:1px solid var(--border);border-radius:20px;padding:24px;color:var(--ink);box-shadow:0 24px 70px #102a4350}
+dialog::backdrop{background:#102a4380}
+dialog h2{margin-top:0;font-size:1.2rem}
+.dialog-actions{display:flex;gap:10px;justify-content:flex-start;flex-wrap:wrap;margin-top:20px}
+.toast{position:fixed;bottom:20px;left:20px;right:20px;max-width:520px;margin:auto;background:#183247;color:white;padding:14px 18px;border-radius:14px;box-shadow:var(--shadow);z-index:20;text-align:center}
+.toast[hidden]{display:none}
+@media(max-width:900px){
+ .layout{display:block;margin:16px auto;padding:0 14px}
+ .sidebar{position:fixed;z-index:15;top:0;bottom:0;right:0;width:min(340px,88vw);max-height:none;border-radius:0 0 0 22px;transform:translateX(110%);transition:transform .25s;box-shadow:-12px 0 40px #18324730}
+ .sidebar.open{transform:translateX(0)}
+ .mobile-filter{display:inline-flex;align-items:center;gap:8px}
+ .close-filter{display:inline-flex;align-items:center;justify-content:center}
+ .mobile-drawer-backdrop.show{display:block;position:fixed;inset:0;background:#102a4377;z-index:14}
+ .header-inner{align-items:flex-start;flex-direction:column}
+ .header-pill{font-size:.82rem}
+ .flashcard{min-height:450px}
+}
+@media(max-width:520px){
+ body{font-size:16px}
+ .app-header{padding:18px 16px}
+ .layout{margin:14px auto}
+ .topbar{align-items:flex-start;flex-direction:column}
+ .flashcard{min-height:470px}
+ .card-face{padding:20px;border-radius:22px}
+ .flashcard,.card-face{border-radius:22px}
+ .card-question{padding:14px 0}
+ .card-controls{display:grid;grid-template-columns:1fr 1fr;width:100%}
+ .card-controls button{min-width:0}
+ .mark-actions{display:grid;grid-template-columns:1fr;width:100%}
+ .end-panel,.empty-panel{padding:24px 18px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+ .flashcard.is-flipped{transform:none}
+ .flashcard .card-front{transition:opacity .15s}
+ .flashcard .card-back{transition:opacity .15s}
+ .flashcard:not(.is-flipped) .card-back{opacity:0;pointer-events:none}
+ .flashcard.is-flipped .card-front{opacity:0;pointer-events:none}
+}
+@media print{
+ .app-header{background:#fff;color:#111;padding:10px}
+ .subtitle,.header-pill,.sidebar,.topbar,.progress-wrap,.card-hint,.card-controls,.mark-actions,.notice{display:none!important}
+ .layout{display:block;margin:0;padding:0}
+ .flashcard{min-height:0;transform:none!important;display:block}
+ .card-face{position:relative;box-shadow:none;min-height:220px;break-inside:avoid;margin:10px 0}
+ .card-back{transform:none}
+}
+</style>
+</head>
+<body>
+<header class="app-header">
+ <div class="header-inner">
+  <div><h1>فلش‌کارت‌های علوم سوم ابتدایی</h1><p class="subtitle">فصل سوم: مواد اطراف ما · مرور و یادآوری در خانه و مدرسه</p></div>
+  <div class="header-pill">🧪 یاد بگیر، به یاد بیاور، مرور کن</div>
+ </div>
+</header>
+<div class="mobile-drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
+<div class="layout">
+ <aside class="sidebar" id="sidebar" aria-label="فیلترها و تنظیمات">
+  <div class="sidebar-heading"><h2>تنظیمات مرور</h2><button class="close-filter" id="closeFiltersBtn" type="button">بستن ✕</button></div>
+  <div class="field"><label for="topicFilter">موضوع کارت‌ها</label><select id="topicFilter"><option value="all">همهٔ موضوع‌ها</option></select></div>
+  <label class="checkline"><input type="checkbox" id="starOnly"> فقط کارت‌های نشان‌دار</label>
+  <div class="field"><label for="statusFilter">وضعیت یادگیری</label><select id="statusFilter"><option value="all">همهٔ وضعیت‌ها</option><option value="learned">یادگرفته‌ام</option><option value="review">نیاز به مرور</option><option value="unmarked">هنوز مشخص نکرده‌ام</option></select></div>
+  <div class="stats" aria-live="polite">
+   <div class="stat"><strong id="totalStat">۲۲</strong><span>کل کارت‌ها</span></div>
+   <div class="stat"><strong id="learnedStat">۰</strong><span>یادگرفته‌ام</span></div>
+   <div class="stat"><strong id="reviewStat">۰</strong><span>نیاز به مرور</span></div>
+   <div class="stat"><strong id="starStat">۰</strong><span>نشان‌دار</span></div>
+  </div>
+  <div class="sidebar-actions">
+   <button class="primary-btn" id="newRoundBtn">🔀 شروع نوبت جدید</button>
+   <button class="ghost-btn" id="reviewAgainBtn">↻ مرور کارت‌های این نوبت</button>
+   <button class="danger-btn" id="resetBtn">شروع از اول</button>
+  </div>
+  <p class="notice" id="storageNotice">پیشرفت روی همین دستگاه ذخیره می‌شود؛ اطلاعاتی ارسال نمی‌شود.</p>
+ </aside>
+ <main>
+  <div class="topbar">
+   <button class="secondary-btn mobile-filter" id="openFiltersBtn" aria-controls="sidebar" aria-expanded="false">☰ فیلترها و تنظیمات</button>
+   <div class="round-status" id="roundStatus" aria-live="polite">در حال آماده‌سازی کارت‌ها…</div>
+  </div>
+  <div class="progress-wrap" aria-label="پیشرفت نوبت"><div class="progress-bar" id="progressBar"></div></div>
+  <p id="selectionStatus" class="notice" role="status" aria-live="polite">در حال انتخاب کارت‌ها…</p>
+  <section id="studyArea" aria-live="polite"></section>
+  <p class="notice">منبع محتوا: صفحات ۲۰ تا ۲۶ فایل کتاب پیوست‌شده. ارجاع‌ها بر اساس شمارهٔ چاپی صفحه‌اند.</p>
+ </main>
+</div>
+<dialog id="resetDialog" aria-labelledby="resetTitle">
+ <h2 id="resetTitle">شروع از اول؟</h2>
+ <p>مطمئنی؟ نشان‌ها، وضعیت یادگیری، پیشرفت، تنظیمات و نوبت فعلی این بازی پاک می‌شوند و قابل بازگشت نیست.</p>
+ <div class="dialog-actions"><button class="danger-btn" id="confirmResetBtn">بله، شروع از اول</button><button class="ghost-btn" id="cancelResetBtn">انصراف</button></div>
+</dialog>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script>
+(() => {
+'use strict';
+const CARDS = [
+{id:'m3-001',topic:'جامد، مایع و گاز',q:'برای ساختن حباب در فعالیت کتاب، از چه چیزهایی می‌توان استفاده کرد؟',a:'آب و صابون، همراه با حلقهٔ سیم نازک؛ می‌توان از نی یا لولهٔ خودکار هم استفاده کرد.',why:'ابتدا صابون را رنده می‌کنیم، در آب گرم حل می‌کنیم و با حلقه یا وسیله‌ای مشابه حباب می‌سازیم.',key:'آب و صابون مایع‌اند؛ صابون مصرف‌نشده جامد است.',page:20},
+{id:'m3-002',topic:'جامد، مایع و گاز',q:'چطور محلول آب و صابون را برای ساختن حباب آماده می‌کنیم؟',a:'صابون را رنده می‌کنیم، در کمی آب گرم می‌ریزیم و هم می‌زنیم تا ناپدید شود.',why:'این مراحل در فعالیت کتاب آمده‌اند؛ سپس با حلقهٔ سیم یا وسیله‌ای مشابه حباب می‌سازیم.',key:'آب گرم به آماده‌شدن مخلوط آب و صابون کمک می‌کند.',page:20},
+{id:'m3-003',topic:'جامد، مایع و گاز',q:'حباب‌هایی که می‌سازیم از چه چیزی پر شده‌اند؟',a:'از هوا؛ هوا یک ماده در حالت گازی است.',why:'هوای داخل حباب جا می‌گیرد و پوستهٔ نازک آب و صابون آن را دربر می‌گیرد.',key:'هوا دیده نمی‌شود، اما وجود دارد و فضا اشغال می‌کند.',page:21},
+{id:'m3-004',topic:'گازها',q:'چرا بادکنک هنگام باد کردن بزرگ‌تر می‌شود؟',a:'چون هوا وارد بادکنک می‌شود و فضای داخل آن را پر می‌کند.',why:'هوا ماده‌ای در حالت گازی است و با واردشدن به بادکنک، اندازهٔ آن افزایش می‌یابد.',key:'گازها فضا اشغال می‌کنند.',page:22},
+{id:'m3-005',topic:'گازها',q:'هوا در کدام حالت ماده قرار دارد؟',a:'حالت گازی.',why:'کتاب هوا را ماده‌ای معرفی می‌کند که حالت جامد یا مایع ندارد و در حالت گازی است.',key:'هوا ماده است، حتی اگر دیده نشود.',page:22},
+{id:'m3-006',topic:'گازها',q:'گازها در ظرف چگونه پخش می‌شوند؟',a:'در همهٔ جای ظرف پخش می‌شوند.',why:'این ویژگی در کتاب برای شناخت گازها بیان شده است.',key:'پخش‌شدن در همهٔ جای ظرف از ویژگی‌های گازهاست.',page:22},
+{id:'m3-007',topic:'گازها',q:'آیا هوا رنگ دارد و به‌راحتی دیده می‌شود؟',a:'خیر؛ هوا بی‌رنگ است و آن را نمی‌بینیم.',why:'با وجود دیده‌نشدن، انسان، گیاهان و جانوران برای زنده‌ماندن به هوا نیاز دارند.',key:'دیده‌نشدن به معنی نبودن نیست.',page:24},
+{id:'m3-008',topic:'گازها',q:'دو نمونه از کاربرد گازها در زندگی را نام ببر.',a:'گاز شهری برای پختن غذا و گاز کربن‌دی‌اکسید برای خاموش‌کردن آتش.',why:'کتاب همچنین استفاده از اکسیژن برای تنفس بیماران و هوا در بادکنک یا کپسول غواصی را نشان می‌دهد.',key:'گازهای مختلف کاربردهای متفاوتی دارند.',page:23},
+{id:'m3-009',topic:'گازها',q:'غواص زیر آب چگونه می‌تواند از هوا استفاده کند؟',a:'با کپسول هوا.',why:'تصویر کتاب غواصی را نشان می‌دهد که زیر آب از کپسول هوا استفاده می‌کند.',key:'کپسول، هوای موردنیاز غواص را فراهم می‌کند.',page:23},
+{id:'m3-010',topic:'گازها',q:'در کتاب، از کدام گاز برای تنفس بیماران نام برده شده است؟',a:'گاز اکسیژن.',why:'یکی از کاربردهای گازها که در تصاویر کتاب آمده، استفاده از اکسیژن برای تنفس بیماران است.',key:'اکسیژن برای تنفس بیماران کاربرد دارد.',page:23},
+{id:'m3-011',topic:'گازها',q:'بالونِ نشان‌داده‌شده در کتاب با چه چیزی پر شده است؟',a:'هوای گرم.',why:'تصویر کتاب بالونی را نشان می‌دهد که با هوای گرم پر شده است.',key:'هوای گرم می‌تواند در بالون به کار رود.',page:24},
+{id:'m3-012',topic:'تغییر حالت مواد',q:'آب در یخ، آب مایع و بخار آب چه حالت‌هایی دارد؟',a:'یخ: جامد؛ آب: مایع؛ بخار آب: گاز.',why:'آب می‌تواند در شرایط مناسب به حالت‌های مختلف دیده شود.',key:'یک ماده می‌تواند در حالت‌های متفاوت باشد.',page:25},
+{id:'m3-013',topic:'تغییر حالت مواد',q:'ذوب‌شدن یعنی چه؟',a:'تبدیل ماده از حالت جامد به حالت مایع.',why:'یخ و کره اگر به‌اندازهٔ کافی گرما دریافت کنند، از جامد به مایع تبدیل می‌شوند.',key:'جامد → مایع = ذوب',page:25},
+{id:'m3-014',topic:'تغییر حالت مواد',q:'برای ذوب‌شدن یخ یا کره چه چیزی لازم است؟',a:'باید به‌اندازهٔ کافی گرما دریافت کنند.',why:'در آزمایش کتاب، یخ و کره در ابتدا جامدند و با دریافت گرما ذوب می‌شوند.',key:'دریافت گرما می‌تواند باعث ذوب شود.',page:25},
+{id:'m3-015',topic:'تغییر حالت مواد',q:'انجماد یعنی چه؟',a:'تبدیل ماده از حالت مایع به حالت جامد.',why:'وقتی آب را در جایخی یخچال بگذاریم، از حالت مایع به جامد تبدیل می‌شود.',key:'مایع → جامد = انجماد',page:26},
+{id:'m3-016',topic:'تغییر حالت مواد',q:'وقتی آب در جایخی یخچال قرار می‌گیرد، چه تغییری می‌کند؟',a:'منجمد می‌شود و از حالت مایع به حالت جامد درمی‌آید.',why:'این نمونهٔ انجماد است که در متن کتاب توضیح داده شده.',key:'یخ‌زدن آب نمونه‌ای از انجماد است.',page:26},
+{id:'m3-017',topic:'تغییر حالت مواد',q:'تبخیر یعنی چه؟',a:'تبدیل ماده از حالت مایع به حالت گاز.',why:'آب با دریافت گرمای کافی بخار می‌شود و به حالت گاز درمی‌آید.',key:'مایع → گاز = تبخیر',page:26},
+{id:'m3-018',topic:'تغییر حالت مواد',q:'خشک‌شدن آب ریخته‌شده در حیاط چه چیزی را نشان می‌دهد؟',a:'آب به‌تدریج تبخیر شده و به حالت گاز درآمده است.',why:'در فعالیت کتاب، محل آب را علامت می‌زنیم و در زمان‌های بعد تغییر آن را مشاهده می‌کنیم.',key:'تبخیر می‌تواند به‌تدریج رخ دهد.',page:26},
+{id:'m3-019',topic:'تغییر حالت مواد',q:'برای هر تغییر حالت، نام درست را انتخاب کن: جامد به مایع، مایع به جامد، مایع به گاز.',a:'جامد به مایع: ذوب؛ مایع به جامد: انجماد؛ مایع به گاز: تبخیر.',why:'هر نام به یک جهت مشخص از تغییر حالت اشاره می‌کند.',key:'ذوب، انجماد و تبخیر را با جهت تغییر به خاطر بسپار.',page:'25–26'},
+{id:'m3-020',topic:'گازها',q:'درست یا نادرست: چون هوا دیده نمی‌شود، ماده نیست.',a:'نادرست؛ هوا ماده است و در حالت گازی قرار دارد.',why:'کتاب توضیح می‌دهد که هوا بی‌رنگ است و دیده نمی‌شود، اما وجود دارد و برای زندگی لازم است.',key:'بی‌رنگ‌بودن با ماده‌نبودن فرق دارد.',page:22},
+{id:'m3-021',topic:'جامد، مایع و گاز',q:'درست یا نادرست: صابون رنده‌شده پیش از حل‌شدن در آب، جامد است.',a:'درست.',why:'در فعالیت کتاب، صابون مصرف‌نشده رنده می‌شود و سپس در آب گرم حل می‌شود.',key:'مواد و وسایل فعالیت را می‌توان از نظر حالت دسته‌بندی کرد.',page:20},
+{id:'m3-022',topic:'تغییر حالت مواد',q:'اگر کره را به‌اندازهٔ کافی گرم کنیم، چه تغییری رخ می‌دهد و نام آن چیست؟',a:'کره از جامد به مایع تبدیل می‌شود؛ این تغییر ذوب نام دارد.',why:'کتاب از کره در کنار یخ به‌عنوان نمونه‌ای برای بررسی ذوب استفاده می‌کند.',key:'تغییر حالت را همراه با نام فرایند بیان کن.',page:25}
+];
+const PREFIX='hadirah-flashcards-grade3-science-ch3-v1';
+const KEYS={progress:PREFIX+'-progress',settings:PREFIX+'-settings',round:PREFIX+'-round'};
+const $=id=>document.getElementById(id);
+const els={topic:$('topicFilter'),star:$('starOnly'),status:$('statusFilter'),study:$('studyArea'),round:$('roundStatus'),progress:$('progressBar'),selection:$('selectionStatus'),total:$('totalStat'),learned:$('learnedStat'),review:$('reviewStat'),stars:$('starStat'),notice:$('storageNotice'),toast:$('toast'),sidebar:$('sidebar'),backdrop:$('drawerBackdrop'),open:$('openFiltersBtn'),close:$('closeFiltersBtn'),resetDialog:$('resetDialog')};
+let storageAvailable=true, progress={}, settings={topic:'all',star:false,status:'all'}, roundIds=[], index=0, flipped=false, ended=false, roundStartedAt=Date.now(), toastTimer=null;
+function safeRead(key,fallback){try{const raw=localStorage.getItem(key);if(!raw)return fallback;const value=JSON.parse(raw);return value&&typeof value==='object'?value:fallback;}catch(e){return fallback;}}
+function safeWrite(key,value){if(!storageAvailable)return;try{localStorage.setItem(key,JSON.stringify(value));}catch(e){storageAvailable=false;els.notice.textContent='حافظهٔ محلی در دسترس نیست؛ بازی ادامه دارد اما پیشرفت ذخیره نمی‌شود.';}}
+function safeRemove(key){if(!storageAvailable)return;try{localStorage.removeItem(key);}catch(e){storageAvailable=false;}}
+function toast(message){els.toast.textContent=message;els.toast.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>els.toast.hidden=true,3200);}
+function normalizeProgress(raw){const out={};for(const card of CARDS){const p=raw[card.id];out[card.id]={star:!!(p&&p.star),status:['learned','review'].includes(p?.status)?p.status:'unmarked',seen:Number.isFinite(p?.seen)?Math.max(0,p.seen):0,lastSeen:Number.isFinite(p?.lastSeen)?p.lastSeen:null};}return out;}
+function saveAll(){safeWrite(KEYS.progress,progress);safeWrite(KEYS.settings,settings);safeWrite(KEYS.round,{ids:roundIds,index,ended,roundStartedAt});}
+function updateStats(){els.total.textContent=CARDS.length;els.learned.textContent=CARDS.filter(c=>progress[c.id].status==='learned').length;els.review.textContent=CARDS.filter(c=>progress[c.id].status==='review').length;els.stars.textContent=CARDS.filter(c=>progress[c.id].star).length;}
+function setupTopics(){const topics=[...new Set(CARDS.map(c=>c.topic))];for(const topic of topics){const opt=document.createElement('option');opt.value=topic;opt.textContent=topic;els.topic.append(opt);}}
+function getFiltered(){return CARDS.filter(c=>(settings.topic==='all'||c.topic===settings.topic)&&(!settings.star||progress[c.id].star)&&(settings.status==='all'||(settings.status==='unmarked'?progress[c.id].status==='unmarked':progress[c.id].status===settings.status)));}
+function shuffled(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function newRound(message='نوبت جدید آماده است.'){roundIds=shuffled(getFiltered()).map(c=>c.id);index=0;flipped=false;ended=false;roundStartedAt=Date.now();saveAll();render();if(!roundIds.length)toast('با این فیلترها کارتی پیدا نشد؛ فیلترها را تغییر بده.');else toast(message);closeDrawer();}
+function currentCard(){return CARDS.find(c=>c.id===roundIds[index]);}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+function render(){updateStats();const total=roundIds.length;if(els.selection)els.selection.textContent=`${total} کارت از ${CARDS.length} کارت؛ این نوبت همهٔ کارت‌های واجد شرایط را دربر می‌گیرد.`;els.round.textContent=total?(ended?'این نوبت تمام شد':`کارت ${index+1} از ${total}`):'کارتی برای نمایش وجود ندارد';els.progress.style.width=total?`${(ended?100:(index+1)/total*100)}%`:'0%';if(!total){els.study.innerHTML='<section class="empty-panel"><div class="end-icon">🔎</div><h2>کارتی پیدا نشد</h2><p>موضوع یا فیلترهای دیگر را انتخاب کن و دوباره نوبت بساز.</p><button class="primary-btn" id="emptyNewRound">تلاش دوباره</button></section>';$('emptyNewRound').addEventListener('click',()=>newRound('فیلترها دوباره بررسی شدند.'));saveAll();return;}if(ended){els.study.innerHTML=`<section class="end-panel"><div class="end-icon">🎉</div><h2>آفرین! این نوبت تمام شد.</h2><p>تعداد کارت‌های این نوبت: <strong>${total}</strong></p><p>کارت‌های یادگرفته‌شده: <strong>${roundIds.filter(id=>progress[id].status==='learned').length}</strong></p><p>کارت‌های نیازمند مرور: <strong>${roundIds.filter(id=>progress[id].status==='review').length}</strong></p><p>زمان این نوبت: <strong>${formatDuration(Date.now()-roundStartedAt)}</strong></p><button class="primary-btn" id="endNewRound">🔀 شروع نوبت جدید</button> <button class="ghost-btn" id="endReview">مرور همین کارت‌ها</button></section>`;$('endNewRound').addEventListener('click',()=>newRound());$('endReview').addEventListener('click',()=>{index=0;ended=false;flipped=false;roundStartedAt=Date.now();saveAll();render();});saveAll();return;}
+const c=currentCard(),p=progress[c.id];els.study.innerHTML=`<div class="card-stage"><article class="flashcard ${flipped?'is-flipped':''}" id="flashcard" tabindex="0" role="button" aria-label="${flipped?'پاسخ کارت؛ برای بازگشت به سؤال کلیک کن':'سؤال کارت؛ برای دیدن پاسخ کلیک کن'}" aria-pressed="${flipped}"><div class="card-face card-front"><div class="card-meta"><span>کارت ${index+1} از ${total}</span><span class="topic-chip">${escapeHTML(c.topic)}</span></div><div class="card-question">${escapeHTML(c.q)}</div><div class="page-ref">📘 صفحهٔ ${escapeHTML(c.page)} کتاب</div></div><div class="card-face card-back"><div class="card-meta"><span>پاسخ کارت ${index+1}</span><span class="topic-chip">${escapeHTML(c.topic)}</span></div><div class="card-question">${escapeHTML(c.a)}</div><div class="answer-detail"><p>${escapeHTML(c.why)}</p></div><div class="key-point"><strong>نکتهٔ کلیدی:</strong> ${escapeHTML(c.key)}</div><div class="page-ref">📘 صفحهٔ ${escapeHTML(c.page)} کتاب</div></div></article></div><p class="card-hint">برای دیدن پاسخ، روی کارت بزن یا دکمهٔ «مشاهدهٔ پاسخ» را انتخاب کن.</p><div class="card-controls"><button class="ghost-btn" id="prevBtn" ${index===0?'disabled':''}>→ قبلی</button><button class="primary-btn" id="flipBtn">${flipped?'بازگشت به سؤال':'مشاهدهٔ پاسخ'}</button><button class="ghost-btn" id="nextBtn">${index===total-1?'پایان نوبت':'بعدی ←'}</button></div><div class="mark-actions"><button class="star-btn" id="starBtn" aria-pressed="${p.star}">${p.star?'★ نشان‌دار شده':'☆ نشان‌دار کردن'}</button><button class="learned-btn" id="learnedBtn">✓ یادگرفته‌ام</button><button class="review-btn" id="reviewBtn">↻ نیاز به مرور</button></div><p class="notice">وضعیت این کارت: <strong>${p.status==='learned'?'یادگرفته‌ام':p.status==='review'?'نیاز به مرور':'هنوز مشخص نشده'}</strong> · دفعات مرور: ${p.seen}</p>`;
+const card=$('flashcard');card.addEventListener('click',e=>{if(e.target.closest('button'))return;toggleFlip();});card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleFlip();}});$('flipBtn').addEventListener('click',toggleFlip);$('prevBtn').addEventListener('click',()=>move(-1));$('nextBtn').addEventListener('click',()=>move(1));$('starBtn').addEventListener('click',toggleStar);$('learnedBtn').addEventListener('click',()=>setStatus('learned'));$('reviewBtn').addEventListener('click',()=>setStatus('review'));saveAll();}
+function formatDuration(ms){const sec=Math.floor(ms/1000),m=Math.floor(sec/60),s=sec%60;return `${m} دقیقه و ${s} ثانیه`;}
+function toggleFlip(){if(ended||!roundIds.length)return;flipped=!flipped;const c=currentCard();if(flipped){progress[c.id].seen++;progress[c.id].lastSeen=Date.now();}render();}
+function move(delta){if(delta>0&&index===roundIds.length-1){ended=true;flipped=false;render();return;}index=Math.max(0,Math.min(roundIds.length-1,index+delta));flipped=false;render();}
+function toggleStar(){const c=currentCard();progress[c.id].star=!progress[c.id].star;saveAll();render();toast(progress[c.id].star?'این کارت نشان‌دار شد.':'نشان کارت برداشته شد.');}
+function setStatus(status){const c=currentCard();progress[c.id].status=status;progress[c.id].lastSeen=Date.now();saveAll();render();toast(status==='learned'?'وضعیت کارت: یادگرفته‌ام':'این کارت برای مرور بعدی مشخص شد.');}
+function readSettingsFromUI(){settings={topic:els.topic.value,star:els.star.checked,status:els.status.value};saveAll();}
+function applySettings(){readSettingsFromUI();newRound('فیلترها اعمال شدند و نوبت تازه‌ای ساخته شد.');}
+function closeDrawer(){els.sidebar.classList.remove('open');els.backdrop.classList.remove('show');els.backdrop.setAttribute('aria-hidden','true');els.open.setAttribute('aria-expanded','false');}
+function openDrawer(){els.sidebar.classList.add('open');els.backdrop.classList.add('show');els.backdrop.setAttribute('aria-hidden','false');els.open.setAttribute('aria-expanded','true');els.close.focus();}
+function init(){try{localStorage.setItem(PREFIX+'-probe','1');localStorage.removeItem(PREFIX+'-probe');}catch(e){storageAvailable=false;els.notice.textContent='حافظهٔ محلی در دسترس نیست؛ بازی ادامه دارد اما پیشرفت ذخیره نمی‌شود.';}
+progress=normalizeProgress(safeRead(KEYS.progress,{}));const saved=safeRead(KEYS.settings,null);if(saved){settings={topic:typeof saved.topic==='string'?saved.topic:'all',star:!!saved.star,status:['all','learned','review','unmarked'].includes(saved.status)?saved.status:'all'};}
+setupTopics();const validTopic=[...els.topic.options].some(o=>o.value===settings.topic);if(!validTopic)settings.topic='all';els.topic.value=settings.topic;els.star.checked=settings.star;els.status.value=settings.status;
+const round=safeRead(KEYS.round,null);if(round&&Array.isArray(round.ids)){const eligibleIds=new Set(getFiltered().map(c=>c.id));const savedIds=round.ids.filter((id,i,arr)=>eligibleIds.has(id)&&arr.indexOf(id)===i);const matchesSelection=savedIds.length===round.ids.length&&savedIds.length===getFiltered().length;if(!matchesSelection){newRound('فیلترها اعمال شدند و نوبت تازه‌ای ساخته شد.');}else{roundIds=savedIds;index=Math.max(0,Math.min(Math.max(0,roundIds.length-1),Number(round.index)||0));ended=!!round.ended&&roundIds.length>0;roundStartedAt=Number(round.roundStartedAt)||Date.now();if(!roundIds.length)newRound('');else render();}}else newRound('نوبت اول آماده است.');}
+els.topic.addEventListener('change',applySettings);els.star.addEventListener('change',applySettings);els.status.addEventListener('change',applySettings);
+$('newRoundBtn').addEventListener('click',()=>newRound());$('reviewAgainBtn').addEventListener('click',()=>{index=0;flipped=false;ended=false;roundStartedAt=Date.now();saveAll();render();toast('همین مجموعه از ابتدا نمایش داده می‌شود.');closeDrawer();});
+$('resetBtn').addEventListener('click',()=>{if(typeof els.resetDialog.showModal==='function')els.resetDialog.showModal();else if(confirm('مطمئنی؟ نشان‌ها، وضعیت یادگیری، پیشرفت، تنظیمات و نوبت فعلی این بازی پاک می‌شوند و قابل بازگشت نیست.'))performReset();});
+$('cancelResetBtn').addEventListener('click',()=>els.resetDialog.close());$('confirmResetBtn').addEventListener('click',()=>{els.resetDialog.close();performReset();});
+function performReset(){safeRemove(KEYS.progress);safeRemove(KEYS.settings);safeRemove(KEYS.round);progress=normalizeProgress({});settings={topic:'all',star:false,status:'all'};els.topic.value='all';els.star.checked=false;els.status.value='all';newRound('بازی به حالت اولیه برگشت.');toast('همهٔ داده‌های همین بازی پاک شد.');}
+els.open.addEventListener('click',openDrawer);els.close.addEventListener('click',()=>{closeDrawer();els.open.focus();});els.backdrop.addEventListener('click',closeDrawer);
+document.addEventListener('keydown',e=>{if(els.resetDialog.open)return;if(e.key==='Escape')closeDrawer();if(e.key==='ArrowLeft'&&!e.target.matches('select,input,button'))move(1);if(e.key==='ArrowRight'&&!e.target.matches('select,input,button'))move(-1);});
+init();
+})();
+</script>
+</body>
+</html>
