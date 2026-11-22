@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>سفر شگفت‌انگیز قطره‌ی آب</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fdf1f6;--card:#fff;--ink:#3b3560;--soft:#7a7499;--acc:#7aa7f0;--line:#eadcf5;--ok:#4caf86;--bad:#e8838f;--p1:#fff0c2;--p2:#e2f0ff;--p3:#e5defa;--p4:#d5f2e3;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1c2b;--card:#1a2b3f;--ink:#eaf4ff;--soft:#9db8d1;--acc:#5db4ff;--line:#2c4560}}
+:root[data-theme="dark"]{--bg:#0f1c2b;--card:#1a2b3f;--ink:#eaf4ff;--soft:#9db8d1;--acc:#5db4ff;--line:#2c4560}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Vazirmatn',Tahoma,sans-serif;line-height:1.8}
+main{max-width:900px;margin:auto;padding:14px}
+h1{font-size:clamp(22px,5vw,34px);text-align:center;margin:6px 0 2px;font-weight:900}
+.sub{text-align:center;color:var(--soft);margin:0 0 12px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:10px;margin-bottom:14px}
+svg#scene{width:100%;height:auto;display:block;border-radius:16px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.steps button{font:inherit;font-weight:700;border:3px solid var(--line);background:var(--card);color:var(--ink);border-radius:18px;padding:8px 4px;cursor:pointer;transition:.2s;font-size:clamp(13px,3.2vw,17px)}
+.steps button .e{display:block;font-size:clamp(24px,6vw,34px);line-height:1.3}
+.steps button:hover{transform:translateY(-3px);border-color:var(--acc)}
+.steps button.on{background:var(--acc);color:#fff;border-color:var(--acc);transform:scale(1.04)}
+.steps button.done::after{content:" ⭐"}
+.say{display:flex;gap:12px;align-items:center}
+.drop{flex:none;width:74px;animation:bob 2s ease-in-out infinite}
+.bubble{background:var(--bg);border-radius:18px;padding:10px 16px;font-size:clamp(15px,3.6vw,19px);min-height:90px;flex:1;display:flex;align-items:center}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn{font:inherit;font-weight:700;border:0;background:var(--acc);color:#fff;border-radius:14px;padding:8px 16px;cursor:pointer}
+.btn.alt{background:var(--card);color:var(--ink);border:2px solid var(--line)}
+.q h2{font-size:20px;margin:4px 0}
+.opts{display:grid;gap:8px}
+.opts button{font:inherit;text-align:right;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:8px 14px;cursor:pointer;font-size:17px}
+.opts button.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opts button.no{background:var(--bad);color:#fff;border-color:var(--bad);animation:shake .4s}
+.stars{font-size:28px;letter-spacing:4px}
+/* scene animation */
+.sunr{transform-origin:90px 80px;animation:spin 18s linear infinite}
+.sun{transform-origin:90px 80px;transition:.5s}
+[data-s="1"] .sun{transform:scale(1.25)}
+#cloud{transform-origin:620px 95px;transform:scale(.55);transition:transform 1.6s,opacity 1.2s;cursor:pointer}
+.cl{fill:#fffaff;transition:fill 1.2s}
+[data-s="1"] #cloud{transform:scale(.15);opacity:.2}
+[data-s="2"] #cloud{transform:scale(1.05)}
+[data-s="3"] #cloud{transform:scale(1.1)}
+[data-s="3"] .cl{fill:#c0c5e4}
+[data-s="4"] #cloud{transform:scale(.6);opacity:.85}
+.vapor circle{opacity:0}
+[data-s="1"] .vapor circle,[data-s="2"] .vapor circle{animation:rise var(--t) linear var(--d) infinite}
+[data-s="2"] .vapor circle{animation-duration:calc(var(--t)*.7)}
+.rain ellipse{opacity:0}
+[data-s="3"] .rain ellipse{animation:fall var(--t) linear var(--d) infinite}
+.river{stroke-dasharray:14 10;opacity:0;transition:opacity .8s}.bed{opacity:.5;transition:opacity .8s}[data-s="3"] .bed,[data-s="4"] .bed{opacity:1}
+[data-s="3"] .river{opacity:.6}
+[data-s="4"] .river{opacity:1;animation:flow .8s linear infinite}
+.wave{animation:wav 5s ease-in-out infinite alternate}
+.wave2{animation-duration:7s;animation-direction:alternate-reverse}
+.heat{opacity:0}
+[data-s="1"] .heat{opacity:1;animation:pulse 1s ease-in-out infinite}
+.arrow{opacity:0;transition:opacity .6s}
+[data-s="1"] .a1,[data-s="2"] .a2,[data-s="3"] .a3,[data-s="4"] .a4{opacity:1}
+.lbl{font:700 17px Vazirmatn,Tahoma,sans-serif;fill:#17324d}
+.steps button{color:#3b3560}
+.steps button:nth-child(1){background:var(--p1)}.steps button:nth-child(2){background:var(--p2)}.steps button:nth-child(3){background:var(--p3)}.steps button:nth-child(4){background:var(--p4)}
+.steps button.on:nth-child(n){background:#6c8de0;color:#fff;border-color:#6c8de0}
+.card{box-shadow:0 6px 20px rgba(160,140,210,.18)}
+.drift{animation:drift 14s ease-in-out infinite alternate}.drift.d2{animation-duration:19s}
+.shim{animation:tw 2s ease-in-out infinite alternate}
+.boat{transform-box:fill-box;transform-origin:center bottom;animation:bobb 3.5s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translateX(45px)}}
+@keyframes tw{from{opacity:.25}to{opacity:.9}}
+@keyframes bobb{from{transform:rotate(-3deg) translateY(0)}to{transform:rotate(3deg) translateY(3px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes rise{0%{transform:translate(0,0) scale(.5);opacity:0}15%{opacity:.9}100%{transform:translate(var(--dx),-235px) scale(1.4);opacity:0}}
+@keyframes fall{0%{transform:translate(0,0);opacity:0}10%{opacity:1}100%{transform:translate(var(--dx),205px);opacity:.9}}
+@keyframes flow{to{stroke-dashoffset:-24}}
+@keyframes wav{to{transform:translateX(-30px)}}
+@keyframes pulse{50%{transform:scale(1.15)}}
+@keyframes bob{50%{transform:translateY(-8px)}}
+@keyframes shake{25%{transform:translateX(6px)}75%{transform:translateX(-6px)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-iteration-count:1!important}}
+</style>
+</head>
+<body>
+<main>
+<h1>💧 سفر شگفت‌انگیز قطره‌ی آب</h1>
+<p class="sub">روی دکمه‌ها بزن و ببین آب چطور دور می‌زند! 🔊</p>
+
+<div class="card">
+<svg id="scene" data-s="0" viewBox="0 0 800 460" role="img" aria-label="چرخه‌ی آب">
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fd6ff"/><stop offset=".6" stop-color="#e1f0ff"/><stop offset="1" stop-color="#ffeef0"/></linearGradient>
+<linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a6e0f7"/><stop offset="1" stop-color="#6fb6ec"/></linearGradient>
+<linearGradient id="mt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d3c4f5"/><stop offset="1" stop-color="#b2a0e4"/></linearGradient>
+<linearGradient id="h2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c3ecc9"/><stop offset="1" stop-color="#97d9ae"/></linearGradient>
+<radialGradient id="glow"><stop offset="0" stop-color="#fff6c8"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></radialGradient>
+<radialGradient id="vap"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".6" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<clipPath id="seaclip"><path d="M0 322H400C415 345 420 380 405 460H0z"/></clipPath>
+<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2"/><feColorMatrix type="saturate" values="0"/></filter>
+</defs>
+<rect width="800" height="460" fill="url(#sky)"/>
+<circle cx="90" cy="80" r="115" fill="url(#glow)"/>
+<g class="drift" fill="#fff" opacity=".75"><ellipse cx="270" cy="66" rx="40" ry="11"/><ellipse cx="296" cy="58" rx="24" ry="12"/></g>
+<g class="drift d2" fill="#fff" opacity=".6"><ellipse cx="400" cy="140" rx="34" ry="9"/><ellipse cx="422" cy="133" rx="20" ry="10"/></g>
+<g id="sunG" style="cursor:pointer"><g class="sunr" stroke="#ffd98a" stroke-width="6" stroke-linecap="round"><path d="M90 22v-12M90 138v12M32 80h-12M148 80h12M49 39l-9-9M131 121l9 9M49 121l-9 9M131 39l9-9"/></g>
+<g class="sun"><circle cx="90" cy="80" r="38" fill="#ffe28f"/><circle cx="77" cy="74" r="4" fill="#b57b3f"/><circle cx="103" cy="74" r="4" fill="#b57b3f"/><ellipse cx="68" cy="86" rx="7" ry="4.5" fill="#ffb4a8" opacity=".7"/><ellipse cx="112" cy="86" rx="7" ry="4.5" fill="#ffb4a8" opacity=".7"/><path d="M78 88q12 11 24 0" stroke="#b57b3f" stroke-width="3" fill="none" stroke-linecap="round"/></g></g>
+<path d="M300 336C340 286 380 276 420 304C450 262 500 244 540 292C580 252 640 232 700 282C740 252 780 256 800 270V340H300z" fill="#e6dcf8"/>
+<path d="M470 338C520 292 560 232 600 187C615 167 628 151 640 149C652 151 662 167 678 192C710 237 750 292 800 338z" fill="url(#mt)" stroke="#c6b6ee" stroke-width="3" stroke-linejoin="round"/>
+<path d="M640 149C652 151 662 167 678 192C710 237 750 292 800 338H700C690 280 665 210 640 149z" fill="#8f82cf" opacity=".28"/>
+<path d="M640 149C628 151 615 167 600 187C612 184 618 194 626 190C632 200 640 192 646 200C652 190 662 196 668 188C660 170 652 151 640 149z" fill="#fff" stroke="#e4eeff" stroke-width="2" stroke-linejoin="round"/>
+<path d="M560 260q15-12 30-4M690 250q-10 6-16 18M600 300q20-8 40 2" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".35"/>
+<path d="M440 342C500 300 560 300 620 332C680 306 750 306 800 326V400H440z" fill="#bfe9c6"/>
+<path d="M380 348C470 332 560 346 640 354C720 360 770 346 800 342V460H380z" fill="url(#h2)"/>
+<path d="M395 322C420 345 432 385 416 460H380V322z" fill="#ffeccc"/>
+<path class="bed" d="M628 200C620 250 642 290 612 330C592 356 520 346 480 362C450 372 430 376 405 380" stroke="#a9ddf6" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="river" d="M628 200C620 250 642 290 612 330C592 356 520 346 480 362C450 372 430 376 405 380" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+<g stroke-linejoin="round"><path d="M556 334l10-26 10 26z" fill="#9fd8c4"/><path d="M572 336l8-20 8 20z" fill="#b5e4d2"/><path d="M668 336l10-24 10 24z" fill="#9fd8c4"/>
+<rect x="515" y="318" width="4" height="12" fill="#e3c4ae"/><circle cx="517" cy="312" r="14" fill="#a6e3b5"/><rect x="745" y="320" width="4" height="12" fill="#e3c4ae"/><circle cx="747" cy="313" r="16" fill="#8fd3a0"/><rect x="470" y="395" width="5" height="16" fill="#e3c4ae"/><circle cx="472" cy="388" r="18" fill="#b2e8bf"/></g>
+<rect x="700" y="352" width="34" height="24" rx="3" fill="#fff3e4"/><path d="M696 354l21-18 21 18z" fill="#ffb8b8" stroke="#ffb8b8" stroke-width="3" stroke-linejoin="round"/><rect x="712" y="361" width="10" height="15" rx="2" fill="#ffd9a8"/>
+<g><circle cx="470" cy="420" r="3" fill="#ffb3c7"/><circle cx="520" cy="432" r="3" fill="#fff3a6"/><circle cx="600" cy="415" r="3" fill="#fff"/><circle cx="650" cy="438" r="3" fill="#ffb3c7"/><circle cx="740" cy="420" r="3" fill="#fff3a6"/><circle cx="560" cy="396" r="3" fill="#fff"/><circle cx="700" cy="400" r="3" fill="#ffb3c7"/><circle cx="440" cy="440" r="3" fill="#fff3a6"/></g>
+<path d="M0 322H400C415 345 420 380 405 460H0z" fill="url(#sea)"/>
+<g clip-path="url(#seaclip)"><rect y="322" width="410" height="16" fill="#cdeeff" opacity=".6"/>
+<g class="shim" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M60 338h30M80 348h22M52 358h18M104 342h18"/></g>
+<g class="wave" opacity=".65"><path d="M-40 352q25-10 50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></g>
+<g class="wave wave2" opacity=".5"><path d="M-40 394q25-10 50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></g>
+<g class="wave" opacity=".4"><path d="M-40 432q25-10 50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></g></g>
+<g class="boat"><path d="M200 354h52l-9 13h-34z" fill="#ffc6d3"/><path d="M226 352V308" stroke="#c9a98f" stroke-width="3"/><path d="M229 350V314l24 36z" fill="#fff"/><path d="M223 350V324l-18 26z" fill="#fff3b8"/></g>
+<g class="heat" style="transform-origin:200px 290px" stroke="#ffb7a3" stroke-width="4" fill="none" stroke-linecap="round"><path d="M120 304q8-10 0-20q-8-10 0-20"/><path d="M180 306q8-10 0-20q-8-10 0-20"/><path d="M300 304q8-10 0-20q-8-10 0-20"/></g>
+<g class="vapor" id="vapor" fill="url(#vap)"></g>
+<g class="rain" id="rain" fill="#8fd0f7"></g>
+<g id="cloud"><g fill="#d7d0f2" transform="translate(0 7)"><circle cx="572" cy="104" r="26"/><circle cx="606" cy="84" r="32"/><circle cx="644" cy="78" r="34"/><circle cx="676" cy="100" r="28"/><rect x="572" y="98" width="104" height="32" rx="16"/></g>
+<g class="cl"><circle cx="572" cy="104" r="26"/><circle cx="606" cy="84" r="32"/><circle cx="644" cy="78" r="34"/><circle cx="676" cy="100" r="28"/><rect x="572" y="98" width="104" height="32" rx="16"/></g>
+<circle cx="608" cy="102" r="4" fill="#3b3560"/><circle cx="640" cy="102" r="4" fill="#3b3560"/><ellipse cx="596" cy="112" rx="7" ry="4" fill="#ffb3c7" opacity=".8"/><ellipse cx="652" cy="112" rx="7" ry="4" fill="#ffb3c7" opacity=".8"/><path d="M613 112q11 9 22 0" stroke="#3b3560" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+<g class="arrow a1"><rect x="190" y="236" width="112" height="34" rx="17" fill="#fff" opacity=".88"/><text x="246" y="259" text-anchor="middle" class="lbl">⬆️ تبخیر</text></g>
+<g class="arrow a2"><rect x="440" y="26" width="140" height="34" rx="17" fill="#fff" opacity=".88"/><text x="510" y="49" text-anchor="middle" class="lbl">☁️ ابر می‌شود</text></g>
+<g class="arrow a3"><rect x="690" y="206" width="100" height="34" rx="17" fill="#fff" opacity=".88"/><text x="740" y="229" text-anchor="middle" class="lbl">🌧️ بارش</text></g>
+<g class="arrow a4"><rect x="170" y="404" width="130" height="34" rx="17" fill="#fff" opacity=".88"/><text x="235" y="427" text-anchor="middle" class="lbl">🏞️ جمع‌شدن</text></g>
+<rect width="800" height="460" filter="url(#grain)" opacity=".07" style="pointer-events:none"/>
+</svg>
+</div>
+
+<div class="steps" id="steps"></div>
+
+<div class="card">
+<div class="say">
+<svg class="drop" viewBox="0 0 80 100" aria-hidden="true"><path d="M40 4C40 4 8 44 8 66a32 32 0 0064 0C72 44 40 4 40 4z" fill="#29b6f6" stroke="#0277bd" stroke-width="3"/><circle cx="29" cy="64" r="5" fill="#fff"/><circle cx="51" cy="64" r="5" fill="#fff"/><circle cx="30" cy="65" r="2.5" fill="#17324d"/><circle cx="52" cy="65" r="2.5" fill="#17324d"/><path d="M30 78q10 9 20 0" stroke="#17324d" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+<div class="bubble" id="say" aria-live="polite"></div>
+</div>
+<div class="row"><button class="btn" id="tour">▶️ سفر خودکار</button><button class="btn alt" id="snd">🔊 صدا روشن</button></div>
+</div>
+
+<div class="card q" id="quiz"></div>
+</main>
+
+<script>
+const S=document.getElementById('scene'),NS='http://www.w3.org/2000/svg';
+const R=(a,b)=>a+Math.random()*(b-a);
+// particles
+const vp=document.getElementById('vapor');
+for(let i=0;i<16;i++){const c=document.createElementNS(NS,'circle'),x=R(50,390);c.setAttribute('cx',x);c.setAttribute('cy',R(330,345));c.setAttribute('r',R(9,17));
+c.style.setProperty('--dx',(580-x)*R(.6,1)+'px');c.style.setProperty('--t',R(3,4.5)+'s');c.style.setProperty('--d',-R(0,4)+'s');vp.appendChild(c)}
+const rp=document.getElementById('rain');
+for(let i=0;i<26;i++){const e=document.createElementNS(NS,'ellipse');e.setAttribute('cx',R(560,690));e.setAttribute('cy',135);e.setAttribute('rx',3);e.setAttribute('ry',7);
+e.style.setProperty('--dx',R(-30,10)+'px');e.style.setProperty('--t',R(.9,1.4)+'s');e.style.setProperty('--d',-R(0,2)+'s');rp.appendChild(e)}
+// sound
+let AC,on=true;
+const ac=()=>{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC};
+function tone(f,t,d,type='sine',v=.15,f2){if(!on)return;try{const a=ac(),T=a.currentTime+t,o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f,T);if(f2)o.frequency.exponentialRampToValueAtTime(f2,T+d);g.gain.setValueAtTime(0,T);g.gain.linearRampToValueAtTime(v,T+.02);g.gain.exponentialRampToValueAtTime(.001,T+d);o.connect(g).connect(a.destination);o.start(T);o.stop(T+d+.05)}catch(e){}}
+function noise(d,f,v,type,f2){if(!on)return;try{const a=ac(),n=a.sampleRate*d,b=a.createBuffer(1,n,a.sampleRate),x=b.getChannelData(0);for(let i=0;i<n;i++)x[i]=Math.random()*2-1;const s=a.createBufferSource();s.buffer=b;const fl=a.createBiquadFilter();fl.type=type;fl.frequency.setValueAtTime(f,a.currentTime);if(f2)fl.frequency.linearRampToValueAtTime(f2,a.currentTime+d);const g=a.createGain();g.gain.setValueAtTime(0,a.currentTime);g.gain.linearRampToValueAtTime(v,a.currentTime+.4);g.gain.linearRampToValueAtTime(0,a.currentTime+d);s.connect(fl).connect(g).connect(a.destination);s.start()}catch(e){}}
+const SFX={
+1(){noise(3.5,300,.25,'bandpass',1800);for(let i=0;i<7;i++)tone(300+i*70,i*.4,.25,'sine',.12,700+i*90)},
+2(){[523,659,784,1047].forEach((f,i)=>tone(f,i*.22,.7,'triangle',.14));noise(2,2000,.05,'highpass')},
+3(){noise(4,5000,.22,'highpass');for(let i=0;i<22;i++)tone(R(900,2000),R(0,4),.08,'sine',.07)},
+4(){noise(3.5,500,.25,'lowpass',250);for(let i=0;i<9;i++)tone(R(300,500),R(0,3.4),.18,'sine',.1,R(600,900))},
+ok(){[659,880,1175].forEach((f,i)=>tone(f,i*.12,.35,'triangle',.15))},
+no(){tone(220,0,.35,'sawtooth',.08,140)},
+pop(){tone(500,0,.15,'sine',.15,1100)}};
+// steps
+const ST=[
+['☀️','تبخیر','خورشید دریا را گرم می‌کند و آب مثل بخار نامرئی بالا می‌رود. من هم بخار شدم و پرواز کردم! ✨'],
+['☁️','ابر شدن','بالا هوا سرد است. بخارها سرد می‌شوند، کنار هم جمع می‌شوند و ابر درست می‌کنند. به این کار «چگالش» می‌گویند.'],
+['🌧️','بارش','ابر پر از قطره می‌شود و سنگین می‌شود. قطره‌ها از ابر می‌ریزند؛ گاهی باران و گاهی برف! 🌦️'],
+['🏞️','جمع‌شدن','باران روی کوه راه می‌افتد، رودخانه می‌سازد و دوباره به دریا می‌رسد. سفر از اول شروع می‌شود! 🔁']];
+const box=document.getElementById('steps'),say=document.getElementById('say'),seen=new Set();let timers=[],cur=0;
+ST.forEach((s,i)=>{const b=document.createElement('button');b.innerHTML=`<span class="e">${s[0]}</span>${i+1}. ${s[1]}`;b.onclick=()=>{stopTour();go(i+1)};box.appendChild(b)});
+say.textContent='سلام! من قطره‌ی کوچولو هستم 💧 روی دکمه‌ها بزن تا سفر من را ببینی!';
+function go(n){cur=n;S.dataset.s=n;say.textContent=ST[n-1][2];seen.add(n);
+[...box.children].forEach((b,i)=>{b.classList.toggle('on',i==n-1);b.classList.toggle('done',seen.has(i+1)&&i!=n-1)});SFX[n]()}
+function stopTour(){timers.forEach(clearTimeout);timers=[];document.getElementById('tour').textContent='▶️ سفر خودکار'}
+document.getElementById('tour').onclick=function(){if(timers.length){stopTour();return}
+this.textContent='⏹️ توقف';[1,2,3,4].forEach((n,i)=>timers.push(setTimeout(()=>go(n),i*6500)));timers.push(setTimeout(stopTour,4*6500))};
+document.getElementById('snd').onclick=function(){on=!on;this.textContent=on?'🔊 صدا روشن':'🔇 صدا خاموش'};
+document.getElementById('sunG').onclick=()=>{SFX.pop();say.textContent='من خورشیدم! بدون گرمای من آب بالا نمی‌رود ☀️'};
+document.getElementById('cloud').onclick=()=>{SFX[2]();say.textContent='ابر کوچولو سلام می‌کند! ☁️'};
+// quiz
+const Q=[['چه چیزی آب دریا را گرم می‌کند و بخار می‌سازد؟',['ماه 🌙','خورشید ☀️','باد 🌬️'],1],
+['وقتی بخار آب بالا سرد شود چه می‌شود؟',['ابر ☁️','آتش 🔥','شن 🏖️'],0],
+['آب باران آخر سر کجا می‌رود؟',['به فضا 🚀','زیر خانه‌ها 🏠','به رودخانه و دوباره دریا 🌊'],2]];
+const qz=document.getElementById('quiz');let qi=0,score=0;
+function showQ(){if(qi>=Q.length){qz.innerHTML=`<h2>🎉 آفرین! تمام شد</h2><div class="stars">${'⭐'.repeat(score)+'☆'.repeat(Q.length-score)}</div><p>${score==Q.length?'تو دانشمند چرخه‌ی آب شدی!':'یک بار دیگر سفر را ببین و دوباره امتحان کن.'}</p><button class="btn" onclick="qi=0;score=0;showQ()">🔁 دوباره</button>`;return}
+const [t,o,c]=Q[qi];qz.innerHTML=`<h2>🧠 سؤال ${qi+1} از ${Q.length}</h2><p>${t}</p><div class="opts"></div>`;
+const d=qz.querySelector('.opts');o.forEach((x,i)=>{const b=document.createElement('button');b.textContent=x;b.onclick=()=>{if(d.dataset.done)return;d.dataset.done=1;
+if(i==c){b.classList.add('ok');score++;SFX.ok()}else{b.classList.add('no');d.children[c].classList.add('ok');SFX.no()}setTimeout(()=>{qi++;showQ()},1400)};d.appendChild(b)})}
+showQ();
+</script>
+</body>
+</html>
